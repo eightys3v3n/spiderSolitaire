@@ -7,14 +7,14 @@
 #include "input.hpp"
 #include "cardStructure.hpp"
 #include "cards.hpp"
-#include "gmae.hpp"
+#include "game.hpp"
 using namespace std;
 using namespace sf;
 
 RenderWindow window;
-RectangleShape newGameButton, topBar, cardBack;
+RectangleShape newGameButton, topBar;
 Image textures;
-//Texture cardBack;
+Texture cardBack;
 vector< RectangleShape > layers(5);
 map< string, Card > cards;
 vector< vector< Card > > unusedCards, playingCards, discardCards;
@@ -31,7 +31,7 @@ int main()
 
   newGameButton.setFillColor( Color::Blue );
   topBar.setFillColor( Color( 0, 0, 0 ) );
-  cardBack.setFillColor( Color( 200, 200, 200 ) );
+  cardBack.loadFromImage( textures, IntRect(1,393,72,96) );
 
   layers[0].setFillColor( Color::Red );
   layers[1].setFillColor( Color::White );
