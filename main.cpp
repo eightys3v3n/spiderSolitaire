@@ -24,6 +24,8 @@ bool running = true;
 
 int main()
 {
+  srand( time(NULL) );
+
   window.create( VideoMode(800,500), "spider solitair", Style::Close );
   window.setFramerateLimit( 31 );
 
@@ -42,11 +44,9 @@ int main()
   //   layers[l].shape.setTexture( cardBack );
 
   initializeCards();
-  std::cerr << "initialized cards" << std::endl;
 
   // sets the size and position of graphical elements
   reinitializeGraphics();
-  std::cerr << "reinitialized graphics" << std::endl;
 
   //newGame();
 
