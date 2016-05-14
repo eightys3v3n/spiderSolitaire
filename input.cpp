@@ -7,7 +7,6 @@
 extern sf::RenderWindow window;
 extern sf::RectangleShape newGameButton;
 extern std::vector< sf::RectangleShape > layers;
-extern std::map< std::string, Card > cards;
 extern bool running, playing;
 
 bool layerClicks( sf::Event* event )

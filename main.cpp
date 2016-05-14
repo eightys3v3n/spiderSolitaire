@@ -6,13 +6,19 @@
 #include "draw.hpp"
 #include "input.hpp"
 #include "cardStructure.hpp"
+#include "cards.hpp"
+#include "gmae.hpp"
 using namespace std;
 using namespace sf;
 
 RenderWindow window;
 RectangleShape newGameButton, topBar, cardBack;
+Image textures;
+//Texture cardBack;
 vector< RectangleShape > layers(5);
 map< string, Card > cards;
+vector< vector< Card > > unusedCards, playingCards, discardCards;
+vector< vector< Card* > > board;
 bool playing = false;
 bool running = true;
 
@@ -20,6 +26,8 @@ int main()
 {
   window.create( VideoMode(800,500), "spider solitair", Style::Close );
   window.setFramerateLimit( 31 );
+
+  textures.loadFromFile( "textures.png" );
 
   newGameButton.setFillColor( Color::Blue );
   topBar.setFillColor( Color( 0, 0, 0 ) );
@@ -30,9 +38,15 @@ int main()
   layers[2].setFillColor( Color::Red );
   layers[3].setFillColor( Color::White );
   layers[4].setFillColor( Color::Red );
+  // for ( unsigned int l = 0; l < layers.size(); l++ )
+  //   layers[l].shape.setTexture( cardBack );
+
+  initializeCards();
 
   // sets the size and position of graphical elements
   reinitializeGraphics();
+
+  newGame();
 
   while( running )
   {
@@ -40,3 +54,6 @@ int main()
     input();
   }
 }
+
+
+// cards resource from http://www.milefoot.com/math/discrete/counting/images/cards.png

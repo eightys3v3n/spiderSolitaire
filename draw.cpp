@@ -1,11 +1,14 @@
 #include <iostream>
 #include <vector>
+#include <map>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
+#include "cardStructure.hpp"
 
 extern sf::RenderWindow window;
 extern sf::RectangleShape newGameButton, topBar;
 extern std::vector< sf::RectangleShape > layers;
+extern std::vector< std::vector< Card > > board;
 extern bool playing;
 
 void reinitializeGraphics()
@@ -31,7 +34,13 @@ void drawLayers()
 
 void drawCards()
 {
-  #warning drawCards()
+  for ( unsigned int x = 0; x < board.size(); x++ )
+  {
+    for ( unsigned int y = 0; y < board[x].size(); y++ )
+    {
+      window.draw( board[x][y].shape );
+    }
+  }
 }
 
 void draw()
