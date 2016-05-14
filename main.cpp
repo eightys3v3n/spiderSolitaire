@@ -42,11 +42,13 @@ int main()
   //   layers[l].shape.setTexture( cardBack );
 
   initializeCards();
+  std::cerr << "initialized cards" << std::endl;
 
   // sets the size and position of graphical elements
   reinitializeGraphics();
+  std::cerr << "reinitialized graphics" << std::endl;
 
-  newGame();
+  //newGame();
 
   while( running )
   {
