@@ -1,3 +1,4 @@
 
 
 void initializeCards();
+Card* randomCard();
