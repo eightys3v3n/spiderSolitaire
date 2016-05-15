@@ -8,7 +8,7 @@
 extern sf::RenderWindow window;
 extern sf::RectangleShape newGameButton, topBar;
 extern std::vector< sf::RectangleShape > layers;
-extern std::vector< std::vector< Card > > board;
+extern std::vector< std::vector< Card* > > board;
 extern bool playing;
 
 void reinitializeGraphics()
@@ -38,7 +38,7 @@ void drawCards()
   {
     for ( unsigned int y = 0; y < board[x].size(); y++ )
     {
-      window.draw( board[x][y].shape );
+      window.draw( board[x][y]->shape );
     }
   }
 }
