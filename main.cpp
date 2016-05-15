@@ -35,22 +35,8 @@ int main()
   topBar.setFillColor( Color(0,0,0) );
   cardBack.loadFromImage( textures, IntRect(1,393,72,96) );
 
-  layers[0].setFillColor( Color::Red );
-  layers[1].setFillColor( Color::White );
-  layers[2].setFillColor( Color::Red );
-  layers[3].setFillColor( Color::White );
-  layers[4].setFillColor( Color::Red );
-  // for ( unsigned int l = 0; l < layers.size(); l++ )
-  //   layers[l].shape.setTexture( cardBack );
-
-  /*RectangleShape testShape;
-  testShape.setSize( Vector2f(72,96) );
-  testShape.setTexture( &cardBack, true );
-  testShape.setPosition( Vector2f(200,200) );
-  window.clear(Color::Green);
-  window.draw(testShape);
-  window.display();
-  cin.ignore(255, '\n');*/
+  for ( unsigned int l = 0; l < layers.size(); l++ )
+    layers[l].setTexture( &cardBack );
 
   initializeCards();
 
