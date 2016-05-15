@@ -17,7 +17,7 @@ Image textures;
 Texture cardBack;
 vector< RectangleShape > layers(5);
 map< string, Card > cards;
-vector< vector< Card > > unusedCards, playingCards, discardCards;
+vector< Card* > unusedCards, playingCards, discardCards;
 vector< vector< Card* > > board;
 bool playing = false;
 bool running = true;
@@ -32,7 +32,7 @@ int main()
   textures.loadFromFile( "textures.png" );
 
   newGameButton.setFillColor( Color::Blue );
-  topBar.setFillColor( Color( 0, 0, 0 ) );
+  topBar.setFillColor( Color(0,0,0) );
   cardBack.loadFromImage( textures, IntRect(1,393,72,96) );
 
   layers[0].setFillColor( Color::Red );
@@ -43,12 +43,21 @@ int main()
   // for ( unsigned int l = 0; l < layers.size(); l++ )
   //   layers[l].shape.setTexture( cardBack );
 
+  /*RectangleShape testShape;
+  testShape.setSize( Vector2f(72,96) );
+  testShape.setTexture( &cardBack, true );
+  testShape.setPosition( Vector2f(200,200) );
+  window.clear(Color::Green);
+  window.draw(testShape);
+  window.display();
+  cin.ignore(255, '\n');*/
+
   initializeCards();
 
   // sets the size and position of graphical elements
   reinitializeGraphics();
 
-  //newGame();
+  newGame();
 
   while( running )
   {
