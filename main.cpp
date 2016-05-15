@@ -17,8 +17,8 @@ Image textures;
 Texture cardBack;
 vector< RectangleShape > layers(5);
 map< string, Card > cards;
-vector< Card* > unusedCards, playingCards, discardCards;
-vector< vector< Card* > > board;
+vector< string > unusedCards, playingCards, discardCards;
+vector< vector< string > > board;
 bool playing = false;
 bool running = true;
 
@@ -39,10 +39,7 @@ int main()
     layers[l].setTexture( &cardBack );
 
   initializeCards();
-
-  // sets the size and position of graphical elements
   reinitializeGraphics();
-
   newGame();
 
   while( running )

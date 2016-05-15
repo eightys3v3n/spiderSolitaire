@@ -6,8 +6,8 @@
 
 extern sf::Image textures;
 extern std::map< std::string, Card > cards;
-extern std::vector< Card* > unusedCards, playingCards, discardCards;
-extern std::vector< std::vector< Card* > > board;
+extern std::vector< std::string > unusedCards, playingCards, discardCards;
+extern std::vector< std::vector< std::string > > board;
 extern sf::RenderWindow window;
 extern sf::RectangleShape topBar;
 
@@ -226,25 +226,28 @@ void initializeCards()
   cards["kingdiamond"].id = "kingdiamond";
 }
 
-Card* randomCard()
+std::string randomCard()
 {
-  if ( unusedCards.size() == 0 )
-    std::cout << "ERROR ERROR" << std::endl;
-
   int n = rand() % unusedCards.size();
-  Card* returnCard = unusedCards[n];
+  std::string returnCard = unusedCards[n];
 
   unusedCards.erase( unusedCards.begin() + n );
-  playingCards.push_back( returnCard );
 
   return returnCard;
 }
 
 void setCardPositions()
 {
+  std::cout << "positions" << std::endl;
+
   for ( unsigned int x = 0; x < board.size(); x++ )
   {
     for ( unsigned int y = 0; y < board[x].size(); y++ )
-      board[x][y]->shape.setPosition( sf::Vector2f( x * window.getSize().x * 1/10, y * window.getSize().y * 1/20 + topBar.getSize().y ) );
+    {
+      cards[ board[x][y] ].shape.setPosition( sf::Vector2f( x * window.getSize().x * 1/10, y * window.getSize().y * 1/20 ) );
+      std::cout << x << "," << y << ":" << x * window.getSize().x * 1/10 << "," << y * window.getSize().y * 1/20 << std::endl;
+    }
   }
+
+  std::cout << "end" << std::endl;
 }

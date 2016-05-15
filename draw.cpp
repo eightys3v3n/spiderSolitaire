@@ -8,7 +8,8 @@
 extern sf::RenderWindow window;
 extern sf::RectangleShape newGameButton, topBar;
 extern std::vector< sf::RectangleShape > layers;
-extern std::vector< std::vector< Card* > > board;
+extern std::vector< std::vector< std::string > > board;
+extern std::map< std::string, Card > cards;
 extern bool playing;
 
 void reinitializeGraphics()
@@ -38,7 +39,9 @@ void drawCards()
   {
     for ( unsigned int y = 0; y < board[x].size(); y++ )
     {
-      window.draw( board[x][y]->shape );
+      window.draw( cards[ board[x][y] ].shape );
+      //std::cout << x << "," << y << ":" << cards[ board[x][y] ].shape.getPosition().x << "," << cards[ board[x][y] ].shape.getPosition().y << std::endl;
+      std::cout << x << "," << y << ":" << cards[ board[x][y] ].id << std::endl;
     }
   }
 }

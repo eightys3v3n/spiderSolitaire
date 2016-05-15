@@ -1,5 +1,5 @@
-
+#include <string>
 
 void initializeCards();
-Card* randomCard();
+std::string randomCard();
 void setCardPositions();
