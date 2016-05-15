@@ -36,8 +36,6 @@ void newGame()
       board[c][d]->shape.setTexture( board[c][d]->back, true ); // set texture to the card back
     }
 
-    std::cout << "unusedCards: " << unusedCards.size() << std::endl;
-
     board[c].push_back( randomCard() );
     board[c][ board[c].size() - 1 ]->shape.setTexture( &board[c][ board[c].size() - 1 ]->face, true ); // set texture to the card front
   }
