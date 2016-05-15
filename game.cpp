@@ -1,4 +1,4 @@
-#include <string>
+#include <iostream>
 #include <vector>
 #include <map>
 #include <SFML/Graphics.hpp>
@@ -8,7 +8,7 @@
 
 extern std::vector< std::vector< Card* > > board;
 extern std::vector< Card* > unusedCards, playingCards, discardCards;
-extern std::map< std::string, Card* > cards;
+extern std::map< std::string, Card > cards;
 
 void newGame()
 {
@@ -17,8 +17,9 @@ void newGame()
   discardCards.resize( 0 );
   unusedCards.resize( 0 );
 
-  for ( auto& card : cards )
-    unusedCards.push_back( card.second );
+  for ( unsigned int decks = 0; decks < 8; decks++ )
+    for ( auto& card : cards )
+      unusedCards.push_back( &card.second );
 
   board.resize( 10 );
 
@@ -32,10 +33,14 @@ void newGame()
     for ( unsigned int d = 0; d < faceDownCount; d++ )
     {
       board[c][d] = randomCard();
-      board[c][d]->shape.setTexture( board[c][d]->back, true );
+      board[c][d]->shape.setTexture( board[c][d]->back, true ); // set texture to the card back
     }
 
+    std::cout << "unusedCards: " << unusedCards.size() << std::endl;
+
     board[c].push_back( randomCard() );
-    board[c][ board[c].size() - 1 ]->shape.setTexture( &board[c][ board[c].size() - 1 ]->face, true );
+    board[c][ board[c].size() - 1 ]->shape.setTexture( &board[c][ board[c].size() - 1 ]->face, true ); // set texture to the card front
   }
+
+  setCardPositions();
 }
