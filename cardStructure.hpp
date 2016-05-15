@@ -6,8 +6,10 @@ extern sf::Texture cardBack;
 
 struct Card
 {
+  Card();
+
   std::string id;
   sf::Texture face;
-  sf::Texture* back = &cardBack;
+  sf::Texture* back;
   sf::RectangleShape shape;
 };
