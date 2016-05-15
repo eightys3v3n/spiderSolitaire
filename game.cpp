@@ -20,28 +20,50 @@ void newGame()
 
   for ( unsigned int decks = 0; decks < 8; decks++ )
     for ( auto& card : cards )
-      unusedCards.push_back( card.first );
+      unusedCards.push_back( card.first + ":" + std::to_string(decks) );
 
-  board.resize( 10 );
+  board.resize( 2 );
 
-  for ( unsigned int c = 0; c < board.size(); c++ )
+  std::cout << "original" << std::endl;
+
+  for ( unsigned int x = 0; x < board.size(); x++ )
   {
-    if ( c > 4 )
+    if ( x > 4 )
       faceDownCount = 4;
 
-    board[c].resize( faceDownCount );
+    board[x].resize( faceDownCount + 1 );
 
-    for ( unsigned int d = 0; d < faceDownCount; d++ )
+    for ( unsigned int y = 0; y <= faceDownCount; y++ )
     {
-      board[c][d] = randomCard();
-      cards[ board[c][d] ].shape.setPosition( sf::Vector2f( c * window.getSize().x * 1/10, d * window.getSize().y * 1/20 ) );
-      cards[ board[c][d] ].shape.setTexture( cards[ board[c][d] ].back, true ); // set texture to the card back
-    }
+      if ( y < faceDownCount )
+      {
+        board[x][y] = randomCard();
+        cards[ board[x][y] ].shape.setPosition( sf::Vector2f( x * window.getSize().x * 1/10, y * window.getSize().y * 1/20 ) );
+        cards[ board[x][y] ].shape.setTexture( cards[ board[x][y] ].back, true ); // set texture to the card back
+      }
+      else
+      {
+        board[x][y] = randomCard();
+        cards[ board[x][y] ].shape.setPosition( sf::Vector2f( x * window.getSize().x * 1/10, y * window.getSize().y * 1/20 ) );
+        cards[ board[x][y] ].shape.setTexture( &cards[ board[x][y] ].face, true ); // set texture to the card front
+      }
 
-    board[c].push_back( randomCard() );
-    cards[ board[c][ board[c].size() - 1 ] ].shape.setPosition( sf::Vector2f( c * window.getSize().x * 1/10, ( board[c].size() - 1 ) * window.getSize().y * 1/20 ) );
-    cards[ board[c][ board[c].size() - 1 ] ].shape.setTexture( &cards[ board[c][ board[c].size() - 1 ] ].face, true ); // set texture to the card front
+      std::cout << x << "," << y << ":" << cards[ board[x][y] ].id  << "(" << cards[ board[x][y] ].shape.getPosition().x << "," << cards[ board[x][y] ].shape.getPosition().y << ")" << std::endl;
+    }
   }
+
+  std::cout << "end" << std::endl;
+  std::cout << "board" << std::endl;
+
+  for ( unsigned int x = 0; x < board.size(); x++ )
+  {
+    for ( unsigned int y = 0; y < board[x].size(); y++  )
+    {
+      std::cout << x << "," << y << ":" << cards[ board[x][y] ].id  << "(" << cards[ board[x][y] ].shape.getPosition().x << "," << cards[ board[x][y] ].shape.getPosition().y << ")" << std::endl;
+    }
+  }
+
+  std::cout << "end" << std::endl;
 
   //setCardPositions();
 }
