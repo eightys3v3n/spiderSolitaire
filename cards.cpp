@@ -6,6 +6,7 @@
 
 extern sf::Image textures;
 extern std::map< std::string, Card > cards;
+extern std::vector< Card* > unusedCards, playingCards, discardCards;
 
 void initializeCards()
 {
@@ -120,5 +121,11 @@ void initializeCards()
 
 Card* randomCard()
 {
+  int n = rand() % unusedCards.size();
+  Card* returnCard = unusedCards[n];
 
+  unusedCards.erase( unusedCards.begin() + n );
+  playingCards.push_back( returnCard );
+
+  return returnCard;
 }
