@@ -6,6 +6,7 @@
 
 extern sf::RenderWindow window;
 extern sf::RectangleShape newGameButton;
+extern std::vector< std::vector< Card* > > board;
 extern std::vector< sf::RectangleShape > layers;
 extern bool running, playing;
 
@@ -22,7 +23,21 @@ bool layerClicks( sf::Event* event )
 
 std::string cardClicks( sf::Event* event )
 {
-  return "none";
+  std::string clickedCard = "none";
+
+  for ( unsigned int x = 0; x < board.size(); x++ )
+  {
+    for ( unsigned int y = 0; y < board[x].size(); y++ )
+    {
+      if ( board[x][y]->shape.getGlobalBounds().contains( sf::Vector2f( event->mouseButton.x, event->mouseButton.y ) ) )
+      {
+        clickedCard = board[x][y]->id;
+        std::cout << "clicked card " << x << "," << y << std::endl;
+      }
+    }
+  }
+
+  return clickedCard;
 }
 
 void input()
