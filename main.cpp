@@ -16,9 +16,9 @@ RectangleShape newGameButton, topBar;
 Image textures;
 Texture cardBack;
 vector< RectangleShape > layers(5);
-map< string, Card > cards;
+vector< Card > cards;
 vector< string > unusedCards, playingCards, discardCards;
-vector< vector< string > > board;
+vector< vector< Card* > > board;
 bool playing = false;
 bool running = true;
 

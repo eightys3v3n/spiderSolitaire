@@ -6,9 +6,9 @@
 #include "cardStructure.hpp"
 #include "cards.hpp"
 
-extern std::vector< std::vector< std::string > > board;
+extern std::vector< std::vector< Card* > > board;
 extern std::vector< std::string > unusedCards, playingCards, discardCards;
-extern std::map< std::string, Card > cards;
+extern std::vector< Card > cards;
 extern sf::RenderWindow window;
 
 void newGame()

@@ -5,9 +5,9 @@
 #include "cardStructure.hpp"
 
 extern sf::Image textures;
-extern std::map< std::string, Card > cards;
+extern std::vector< Card > cards;
 extern std::vector< std::string > unusedCards, playingCards, discardCards;
-extern std::vector< std::vector< std::string > > board;
+extern std::vector< std::vector< Card* > > board;
 extern sf::RenderWindow window;
 extern sf::RectangleShape topBar;
 
