@@ -271,3 +271,8 @@ void setCardPositions()
 
   std::cout << "end" << std::endl;
 }
+
+sf::Vector2f cardPosition(unsigned int x, unsigned int y)
+{
+
+}
