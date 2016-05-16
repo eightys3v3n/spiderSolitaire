@@ -13,34 +13,40 @@ using namespace sf;
 
 RenderWindow window;
 RectangleShape newGameButton, topBar;
-Image textures;
-Texture cardBack;
+Image textureFile;
 vector< RectangleShape > layers(5);
 vector< Card > cards;
-vector< string > unusedCards, playingCards, discardCards;
+vector< Card* > unusedCards;
+vector< Texture > textures;
 vector< vector< Card* > > board;
+string suit = "spades";
 bool playing = false;
 bool running = true;
+
+void initialize()
+{
+  initializeTextures();
+  initializeCards();
+  initializeGraphics();
+  newGame();
+}
 
 int main()
 {
   srand( time(NULL) );
 
-  window.create( VideoMode(800,500), "spider solitair", Style::Close );
+  window.create( VideoMode(800,500), "spider solitaire", Style::Close );
   window.setFramerateLimit( 31 );
 
-  textures.loadFromFile( "textures.png" );
+  textureFile.loadFromFile( "textures.png" );
 
   newGameButton.setFillColor( Color::Blue );
   topBar.setFillColor( Color(0,0,0) );
-  cardBack.loadFromImage( textures, IntRect(1,393,72,96) );
+
+  initialize();
 
   for ( unsigned int l = 0; l < layers.size(); l++ )
-    layers[l].setTexture( &cardBack );
-
-  initializeCards();
-  reinitializeGraphics();
-  newGame();
+    layers[l].setTexture( &textures[52] );
 
   while( running )
   {

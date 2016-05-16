@@ -4,232 +4,252 @@
 #include <SFML/System.hpp>
 #include "cardStructure.hpp"
 
-extern sf::Image textures;
+extern sf::Image textureFile;
 extern std::vector< Card > cards;
-extern std::vector< std::string > unusedCards, playingCards, discardCards;
+extern std::vector< Card* > unusedCards;
 extern std::vector< std::vector< Card* > > board;
+extern std::vector< sf::Texture > textures;
 extern sf::RenderWindow window;
 extern sf::RectangleShape topBar;
+extern std::string suit;
+
+void initializeTextures()
+{
+  textures.resize(53);
+
+  textures[ 0].loadFromImage( textureFile, sf::IntRect( 1,   1,72,96) ); // 1 clubs
+  textures[ 1].loadFromImage( textureFile, sf::IntRect( 74,  1,72,96) );
+  textures[ 2].loadFromImage( textureFile, sf::IntRect(147,  1,72,96) );
+  textures[ 3].loadFromImage( textureFile, sf::IntRect(220,  1,72,96) );
+  textures[ 4].loadFromImage( textureFile, sf::IntRect(293,  1,72,96) );
+  textures[ 5].loadFromImage( textureFile, sf::IntRect(366,  1,72,96) );
+  textures[ 6].loadFromImage( textureFile, sf::IntRect(439,  1,72,96) );
+  textures[ 7].loadFromImage( textureFile, sf::IntRect(512,  1,72,96) );
+  textures[ 8].loadFromImage( textureFile, sf::IntRect(585,  1,72,96) );
+  textures[ 9].loadFromImage( textureFile, sf::IntRect(658,  1,72,96) );
+  textures[10].loadFromImage( textureFile, sf::IntRect(731,  1,72,96) );
+  textures[11].loadFromImage( textureFile, sf::IntRect(804,  1,72,96) );
+  textures[12].loadFromImage( textureFile, sf::IntRect(877,  1,72,96) ); // king clubs
+  textures[13].loadFromImage( textureFile, sf::IntRect(  1, 99,72,96) ); // 1 spades
+  textures[14].loadFromImage( textureFile, sf::IntRect( 74, 99,72,96) );
+  textures[15].loadFromImage( textureFile, sf::IntRect(147, 99,72,96) );
+  textures[16].loadFromImage( textureFile, sf::IntRect(220, 99,72,96) );
+  textures[17].loadFromImage( textureFile, sf::IntRect(293, 99,72,96) );
+  textures[18].loadFromImage( textureFile, sf::IntRect(366, 99,72,96) );
+  textures[19].loadFromImage( textureFile, sf::IntRect(439, 99,72,96) );
+  textures[20].loadFromImage( textureFile, sf::IntRect(512, 99,72,96) );
+  textures[21].loadFromImage( textureFile, sf::IntRect(585, 99,72,96) );
+  textures[22].loadFromImage( textureFile, sf::IntRect(658, 99,72,96) );
+  textures[23].loadFromImage( textureFile, sf::IntRect(731, 99,72,96) );
+  textures[24].loadFromImage( textureFile, sf::IntRect(804, 99,72,96) );
+  textures[25].loadFromImage( textureFile, sf::IntRect(877, 99,72,96) ); // king spaces
+  textures[26].loadFromImage( textureFile, sf::IntRect(  1,197,72,96) ); // 1 hearts
+  textures[27].loadFromImage( textureFile, sf::IntRect( 74,197,72,96) );
+  textures[28].loadFromImage( textureFile, sf::IntRect(147,197,72,96) );
+  textures[29].loadFromImage( textureFile, sf::IntRect(220,197,72,96) );
+  textures[30].loadFromImage( textureFile, sf::IntRect(293,197,72,96) );
+  textures[31].loadFromImage( textureFile, sf::IntRect(366,197,72,96) );
+  textures[32].loadFromImage( textureFile, sf::IntRect(439,197,72,96) );
+  textures[33].loadFromImage( textureFile, sf::IntRect(512,197,72,96) );
+  textures[34].loadFromImage( textureFile, sf::IntRect(585,197,72,96) );
+  textures[35].loadFromImage( textureFile, sf::IntRect(658,197,72,96) );
+  textures[36].loadFromImage( textureFile, sf::IntRect(731,197,72,96) );
+  textures[37].loadFromImage( textureFile, sf::IntRect(804,197,72,96) );
+  textures[38].loadFromImage( textureFile, sf::IntRect(877,197,72,96) ); // king hearts
+  textures[39].loadFromImage( textureFile, sf::IntRect(  1,295,72,96) ); // 1 diamonds
+  textures[40].loadFromImage( textureFile, sf::IntRect( 74,295,72,96) );
+  textures[41].loadFromImage( textureFile, sf::IntRect(147,295,72,96) );
+  textures[42].loadFromImage( textureFile, sf::IntRect(220,295,72,96) );
+  textures[43].loadFromImage( textureFile, sf::IntRect(293,295,72,96) );
+  textures[44].loadFromImage( textureFile, sf::IntRect(366,295,72,96) );
+  textures[45].loadFromImage( textureFile, sf::IntRect(439,295,72,96) );
+  textures[46].loadFromImage( textureFile, sf::IntRect(512,295,72,96) );
+  textures[47].loadFromImage( textureFile, sf::IntRect(585,295,72,96) );
+  textures[48].loadFromImage( textureFile, sf::IntRect(658,295,72,96) );
+  textures[49].loadFromImage( textureFile, sf::IntRect(731,295,72,96) );
+  textures[50].loadFromImage( textureFile, sf::IntRect(804,295,72,96) );
+  textures[51].loadFromImage( textureFile, sf::IntRect(877,295,72,96) ); // kind diamonds
+  textures[52].loadFromImage( textureFile, sf::IntRect(  1,393,72,96) ); // card back
+}
 
 void initializeCards()
 {
-  Card newCard;
+  cards.resize( 13 * 8 );
 
-  cards["1club"] = newCard;
-  cards["2club"] = newCard;
-  cards["3club"] = newCard;
-  cards["4club"] = newCard;
-  cards["5club"] = newCard;
-  cards["6club"] = newCard;
-  cards["7club"] = newCard;
-  cards["8club"] = newCard;
-  cards["9club"] = newCard;
-  cards["10club"] = newCard;
-  cards["jackclub"] = newCard;
-  cards["queenclub"] = newCard;
-  cards["kingclub"] = newCard;
-  cards["1spade"] = newCard;
-  cards["2spade"] = newCard;
-  cards["3spade"] = newCard;
-  cards["4spade"] = newCard;
-  cards["5spade"] = newCard;
-  cards["6spade"] = newCard;
-  cards["7spade"] = newCard;
-  cards["8spade"] = newCard;
-  cards["9spade"] = newCard;
-  cards["10spade"] = newCard;
-  cards["jackspade"] = newCard;
-  cards["queenspade"] = newCard;
-  cards["kingspade"] = newCard;
-  cards["1heart"] = newCard;
-  cards["2heart"] = newCard;
-  cards["3heart"] = newCard;
-  cards["4heart"] = newCard;
-  cards["5heart"] = newCard;
-  cards["6heart"] = newCard;
-  cards["7heart"] = newCard;
-  cards["8heart"] = newCard;
-  cards["9heart"] = newCard;
-  cards["10heart"] = newCard;
-  cards["jackheart"] = newCard;
-  cards["queenheart"] = newCard;
-  cards["kingheart"] = newCard;
-  cards["1diamond"] = newCard;
-  cards["2diamond"] = newCard;
-  cards["3diamond"] = newCard;
-  cards["4diamond"] = newCard;
-  cards["5diamond"] = newCard;
-  cards["6diamond"] = newCard;
-  cards["7diamond"] = newCard;
-  cards["8diamond"] = newCard;
-  cards["9diamond"] = newCard;
-  cards["10diamond"] = newCard;
-  cards["jackdiamond"] = newCard;
-  cards["queendiamond"] = newCard;
-  cards["kingdiamond"] = newCard;
+  for ( unsigned int d = 0; d < 8; d++ )
+  {
+    if ( suit == "clubs" )
+    {
+      cards[ 0 + 13 * d].value = "1club";
+      cards[ 0 + 13 * d].face = &textures[0];
+      cards[ 0 + 13 * d].back = &textures[52];
+      cards[ 1 + 13 * d].value = "2club";
+      cards[ 1 + 13 * d].face = &textures[1];
+      cards[ 1 + 13 * d].back = &textures[52];
+      cards[ 2 + 13 * d].value = "3club";
+      cards[ 2 + 13 * d].face = &textures[2];
+      cards[ 2 + 13 * d].back = &textures[52];
+      cards[ 3 + 13 * d].value = "4club";
+      cards[ 3 + 13 * d].face = &textures[3];
+      cards[ 3 + 13 * d].back = &textures[52];
+      cards[ 4 + 13 * d].value = "5club";
+      cards[ 4 + 13 * d].face = &textures[4];
+      cards[ 4 + 13 * d].back = &textures[52];
+      cards[ 5 + 13 * d].value = "6club";
+      cards[ 5 + 13 * d].face = &textures[5];
+      cards[ 5 + 13 * d].back = &textures[52];
+      cards[ 6 + 13 * d].value = "7club";
+      cards[ 6 + 13 * d].face = &textures[6];
+      cards[ 6 + 13 * d].back = &textures[52];
+      cards[ 7 + 13 * d].value = "8club";
+      cards[ 7 + 13 * d].face = &textures[7];
+      cards[ 7 + 13 * d].back = &textures[52];
+      cards[ 8 + 13 * d].value = "9club";
+      cards[ 8 + 13 * d].face = &textures[8];
+      cards[ 8 + 13 * d].back = &textures[52];
+      cards[ 9 + 13 * d].value = "10club";
+      cards[ 9 + 13 * d].face = &textures[9];
+      cards[ 9 + 13 * d].back = &textures[52];
+      cards[10 + 13 * d].value = "jackclub";
+      cards[10 + 13 * d].face = &textures[10];
+      cards[10 + 13 * d].back = &textures[52];
+      cards[11 + 13 * d].value = "queenclub";
+      cards[11 + 13 * d].face = &textures[11];
+      cards[11 + 13 * d].back = &textures[52];
+      cards[12 + 13 * d].value = "kingclub";
+      cards[12 + 13 * d].face = &textures[12];
+      cards[12 + 13 * d].back = &textures[52];
+    }
+    else if ( suit == "spades" )
+    {
+      cards[ 0 + 13 * d].value = "1spade";
+      cards[ 0 + 13 * d].face = &textures[13];
+      cards[ 0 + 13 * d].back = &textures[52];
+      cards[ 1 + 13 * d].value = "2spade";
+      cards[ 1 + 13 * d].face = &textures[14];
+      cards[ 1 + 13 * d].back = &textures[52];
+      cards[ 2 + 13 * d].value = "3spade";
+      cards[ 2 + 13 * d].face = &textures[15];
+      cards[ 2 + 13 * d].back = &textures[52];
+      cards[ 3 + 13 * d].value = "4spade";
+      cards[ 3 + 13 * d].face = &textures[16];
+      cards[ 3 + 13 * d].back = &textures[52];
+      cards[ 4 + 13 * d].value = "5spade";
+      cards[ 4 + 13 * d].face = &textures[17];
+      cards[ 4 + 13 * d].back = &textures[52];
+      cards[ 5 + 13 * d].value = "6spade";
+      cards[ 5 + 13 * d].face = &textures[18];
+      cards[ 5 + 13 * d].back = &textures[52];
+      cards[ 6 + 13 * d].value = "7spade";
+      cards[ 6 + 13 * d].face = &textures[19];
+      cards[ 6 + 13 * d].back = &textures[52];
+      cards[ 7 + 13 * d].value = "8spade";
+      cards[ 7 + 13 * d].face = &textures[20];
+      cards[ 7 + 13 * d].back = &textures[52];
+      cards[ 8 + 13 * d].value = "9spade";
+      cards[ 8 + 13 * d].face = &textures[21];
+      cards[ 8 + 13 * d].back = &textures[52];
+      cards[ 9 + 13 * d].value = "10spade";
+      cards[ 9 + 13 * d].face = &textures[22];
+      cards[ 9 + 13 * d].back = &textures[52];
+      cards[10 + 13 * d].value = "jackspade";
+      cards[10 + 13 * d].face = &textures[23];
+      cards[10 + 13 * d].back = &textures[52];
+      cards[11 + 13 * d].value = "queenspade";
+      cards[11 + 13 * d].face = &textures[24];
+      cards[11 + 13 * d].back = &textures[52];
+      cards[12 + 13 * d].value = "kingspade";
+      cards[12 + 13 * d].face = &textures[25];
+      cards[12 + 13 * d].back = &textures[52];
+    }
+/*    cards[26 + 13 * d].value = "1heart";
+    cards[26 + 13 * d].face = &textures[26];
+    cards[26 + 13 * d].back = &textures[52];
+    cards[27 + 13 * d].value = "2heart";
+    cards[27 + 13 * d].face = &textures[27];
+    cards[27 + 13 * d].back = &textures[52];
+    cards[28 + 13 * d].value = "3heart";
+    cards[28 + 13 * d].face = &textures[28];
+    cards[28 + 13 * d].back = &textures[52];
+    cards[29 + 13 * d].value = "4heart";
+    cards[29 + 13 * d].face = &textures[29];
+    cards[29 + 13 * d].back = &textures[52];
+    cards[30 + 13 * d].value = "5heart";
+    cards[30 + 13 * d].face = &textures[30];
+    cards[30 + 13 * d].back = &textures[52];
+    cards[31 + 13 * d].value = "6heart";
+    cards[31 + 13 * d].face = &textures[31];
+    cards[31 + 13 * d].back = &textures[52];
+    cards[32 + 13 * d].value = "7heart";
+    cards[32 + 13 * d].face = &textures[32];
+    cards[32 + 13 * d].back = &textures[52];
+    cards[33 + 13 * d].value = "8heart";
+    cards[33 + 13 * d].face = &textures[33];
+    cards[33 + 13 * d].back = &textures[52];
+    cards[34 + 13 * d].value = "9heart";
+    cards[34 + 13 * d].face = &textures[34];
+    cards[34 + 13 * d].back = &textures[52];
+    cards[35 + 13 * d].value = "10heart";
+    cards[35 + 13 * d].face = &textures[35];
+    cards[35 + 13 * d].back = &textures[52];
+    cards[36 + 13 * d].value = "jackheart";
+    cards[36 + 13 * d].face = &textures[36];
+    cards[36 + 13 * d].back = &textures[52];
+    cards[37 + 13 * d].value = "queenheart";
+    cards[37 + 13 * d].face = &textures[37];
+    cards[37 + 13 * d].back = &textures[52];
+    cards[38 + 13 * d].value = "kingheart";
+    cards[38 + 13 * d].face = &textures[38];
+    cards[38 + 13 * d].back = &textures[52];
+    cards[39 + 13 * d].value = "1diamond";
+    cards[39 + 13 * d].face = &textures[39];
+    cards[39 + 13 * d].back = &textures[52];
+    cards[40 + 13 * d].value = "2diamond";
+    cards[40 + 13 * d].face = &textures[40];
+    cards[40 + 13 * d].back = &textures[52];
+    cards[41 + 13 * d].value = "3diamond";
+    cards[41 + 13 * d].face = &textures[41];
+    cards[41 + 13 * d].back = &textures[52];
+    cards[42 + 13 * d].value = "4diamond";
+    cards[42 + 13 * d].face = &textures[42];
+    cards[42 + 13 * d].back = &textures[52];
+    cards[43 + 13 * d].value = "5diamond";
+    cards[43 + 13 * d].face = &textures[43];
+    cards[43 + 13 * d].back = &textures[52];
+    cards[44 + 13 * d].value = "6diamond";
+    cards[44 + 13 * d].face = &textures[44];
+    cards[44 + 13 * d].back = &textures[52];
+    cards[45 + 13 * d].value = "7diamond";
+    cards[45 + 13 * d].face = &textures[45];
+    cards[45 + 13 * d].back = &textures[52];
+    cards[46 + 13 * d].value = "8diamond";
+    cards[46 + 13 * d].face = &textures[46];
+    cards[46 + 13 * d].back = &textures[52];
+    cards[47 + 13 * d].value = "9diamond";
+    cards[47 + 13 * d].face = &textures[47];
+    cards[47 + 13 * d].back = &textures[52];
+    cards[48 + 13 * d].value = "10diamond";
+    cards[48 + 13 * d].face = &textures[48];
+    cards[48 + 13 * d].back = &textures[52];
+    cards[49 + 13 * d].value = "jackdiamond";
+    cards[49 + 13 * d].face = &textures[49];
+    cards[49 + 13 * d].back = &textures[52];
+    cards[50 + 13 * d].value = "queendiamond";
+    cards[50 + 13 * d].face = &textures[50];
+    cards[50 + 13 * d].back = &textures[52];
+    cards[51 + 13 * d].value = "kingdiamond";
+    cards[51 + 13 * d].face = &textures[51];
+    cards[51 + 13 * d].back = &textures[52];*/
+  }
 
-  cards["1club"].face.loadFromImage( textures, sf::IntRect(1,1,72,96) );
-  cards["1club"].shape.setTexture( &cards["1club"].face );
-  cards["1club"].id = "1club";
-  cards["2club"].face.loadFromImage( textures, sf::IntRect(74,1,72,96) );
-  cards["2club"].shape.setTexture( &cards["2club"].face );
-  cards["2club"].id = "2club";
-  cards["3club"].face.loadFromImage( textures, sf::IntRect(147,1,72,96) );
-  cards["3club"].shape.setTexture( &cards["3club"].face );
-  cards["3club"].id = "3club";
-  cards["4club"].face.loadFromImage( textures, sf::IntRect(220,1,72,96) );
-  cards["4club"].shape.setTexture( &cards["4club"].face );
-  cards["4club"].id = "4club";
-  cards["5club"].face.loadFromImage( textures, sf::IntRect(293,1,72,96) );
-  cards["5club"].shape.setTexture( &cards["5club"].face );
-  cards["5club"].id = "5club";
-  cards["6club"].face.loadFromImage( textures, sf::IntRect(366,1,72,96) );
-  cards["6club"].shape.setTexture( &cards["6club"].face );
-  cards["6club"].id = "6club";
-  cards["7club"].face.loadFromImage( textures, sf::IntRect(439,1,72,96) );
-  cards["7club"].shape.setTexture( &cards["7club"].face );
-  cards["7club"].id = "7club";
-  cards["8club"].face.loadFromImage( textures, sf::IntRect(512,1,72,96) );
-  cards["8club"].shape.setTexture( &cards["8club"].face );
-  cards["8club"].id = "8club";
-  cards["9club"].face.loadFromImage( textures, sf::IntRect(585,1,72,96) );
-  cards["9club"].shape.setTexture( &cards["9club"].face );
-  cards["9club"].id = "9club";
-  cards["10club"].face.loadFromImage( textures, sf::IntRect(658,1,72,96) );
-  cards["10club"].shape.setTexture( &cards["10club"].face );
-  cards["10club"].id = "10club";
-  cards["jackclub"].face.loadFromImage( textures, sf::IntRect(731,1,72,96) );
-  cards["jackclub"].shape.setTexture( &cards["jackclub"].face );
-  cards["jackclub"].id = "jackclub";
-  cards["queenclub"].face.loadFromImage( textures, sf::IntRect(804,1,72,96) );
-  cards["queenclub"].shape.setTexture( &cards["queenclub"].face );
-  cards["queenclub"].id = "queenclub";
-  cards["kingclub"].face.loadFromImage( textures, sf::IntRect(877,1,72,96) );
-  cards["kingclub"].shape.setTexture( &cards["kingclub"].face );
-  cards["kingclub"].id = "kingclub";
-  cards["1spade"].face.loadFromImage( textures, sf::IntRect(1,99,72,96) );
-  cards["1spade"].shape.setTexture( &cards["1spade"].face );
-  cards["1spade"].id = "1spade";
-  cards["2spade"].face.loadFromImage( textures, sf::IntRect(74,99,72,96) );
-  cards["2spade"].shape.setTexture( &cards["2spade"].face );
-  cards["2spade"].id = "2spade";
-  cards["3spade"].face.loadFromImage( textures, sf::IntRect(147,99,72,96) );
-  cards["3spade"].shape.setTexture( &cards["3spade"].face );
-  cards["3spade"].id = "3spade";
-  cards["4spade"].face.loadFromImage( textures, sf::IntRect(220,99,72,96) );
-  cards["4spade"].shape.setTexture( &cards["4spade"].face );
-  cards["4spade"].id = "4spade";
-  cards["5spade"].face.loadFromImage( textures, sf::IntRect(293,99,72,96) );
-  cards["5spade"].shape.setTexture( &cards["5spade"].face );
-  cards["5spade"].id = "5spade";
-  cards["6spade"].face.loadFromImage( textures, sf::IntRect(366,99,72,96) );
-  cards["6spade"].shape.setTexture( &cards["6spade"].face );
-  cards["6spade"].id = "6spade";
-  cards["7spade"].face.loadFromImage( textures, sf::IntRect(439,99,72,96) );
-  cards["7spade"].shape.setTexture( &cards["7spade"].face );
-  cards["7spade"].id = "7spade";
-  cards["8spade"].face.loadFromImage( textures, sf::IntRect(512,99,72,96) );
-  cards["8spade"].shape.setTexture( &cards["8spade"].face );
-  cards["8spade"].id = "8spade";
-  cards["9spade"].face.loadFromImage( textures, sf::IntRect(585,99,72,96) );
-  cards["9spade"].shape.setTexture( &cards["9spade"].face );
-  cards["9spade"].id = "9spade";
-  cards["10spade"].face.loadFromImage( textures, sf::IntRect(658,99,72,96) );
-  cards["10spade"].shape.setTexture( &cards["10spade"].face );
-  cards["10spade"].id = "10spade";
-  cards["jackspade"].face.loadFromImage( textures, sf::IntRect(731,99,72,96) );
-  cards["jackspade"].shape.setTexture( &cards["jackspade"].face );
-  cards["jackspade"].id = "jackspade";
-  cards["queenspade"].face.loadFromImage( textures, sf::IntRect(804,99,72,96) );
-  cards["queenspade"].shape.setTexture( &cards["queenspade"].face );
-  cards["queenspade"].id = "queenspade";
-  cards["kingspade"].face.loadFromImage( textures, sf::IntRect(877,99,72,96) );
-  cards["kingspade"].shape.setTexture( &cards["kingspade"].face );
-  cards["kingspade"].id = "kingspade";
-  cards["1heart"].face.loadFromImage( textures, sf::IntRect(1,197,72,96) );
-  cards["1heart"].shape.setTexture( &cards["1heart"].face );
-  cards["1heart"].id = "1heart";
-  cards["2heart"].face.loadFromImage( textures, sf::IntRect(74,197,72,96) );
-  cards["2heart"].shape.setTexture( &cards["2heart"].face );
-  cards["2heart"].id = "2heart";
-  cards["3heart"].face.loadFromImage( textures, sf::IntRect(147,197,72,96) );
-  cards["3heart"].shape.setTexture( &cards["3heart"].face );
-  cards["3heart"].id = "3heart";
-  cards["4heart"].face.loadFromImage( textures, sf::IntRect(220,197,72,96) );
-  cards["4heart"].shape.setTexture( &cards["4heart"].face );
-  cards["4heart"].id = "4heart";
-  cards["5heart"].face.loadFromImage( textures, sf::IntRect(293,197,72,96) );
-  cards["5heart"].shape.setTexture( &cards["5heart"].face );
-  cards["5heart"].id = "5heart";
-  cards["6heart"].face.loadFromImage( textures, sf::IntRect(366,197,72,96) );
-  cards["6heart"].shape.setTexture( &cards["6heart"].face );
-  cards["6heart"].id = "6heart";
-  cards["7heart"].face.loadFromImage( textures, sf::IntRect(439,197,72,96) );
-  cards["7heart"].shape.setTexture( &cards["7heart"].face );
-  cards["7heart"].id = "7heart";
-  cards["8heart"].face.loadFromImage( textures, sf::IntRect(512,197,72,96) );
-  cards["8heart"].shape.setTexture( &cards["8heart"].face );
-  cards["8heart"].id = "8heart";
-  cards["9heart"].face.loadFromImage( textures, sf::IntRect(585,197,72,96) );
-  cards["9heart"].shape.setTexture( &cards["9heart"].face );
-  cards["9heart"].id = "9heart";
-  cards["10heart"].face.loadFromImage( textures, sf::IntRect(658,197,72,96) );
-  cards["10heart"].shape.setTexture( &cards["10heart"].face );
-  cards["10heart"].id = "10heart";
-  cards["jackheart"].face.loadFromImage( textures, sf::IntRect(731,197,72,96) );
-  cards["jackheart"].shape.setTexture( &cards["jackheart"].face );
-  cards["jackheart"].id = "jackheart";
-  cards["queenheart"].face.loadFromImage( textures, sf::IntRect(804,197,72,96) );
-  cards["queenheart"].shape.setTexture( &cards["queenheart"].face );
-  cards["queenheart"].id = "queenheart";
-  cards["kingheart"].face.loadFromImage( textures, sf::IntRect(877,197,72,96) );
-  cards["kingheart"].shape.setTexture( &cards["kingheart"].face );
-  cards["kingheart"].id = "kingheart";
-  cards["1diamond"].face.loadFromImage( textures, sf::IntRect(1,295,72,96) );
-  cards["1diamond"].shape.setTexture( &cards["1diamond"].face );
-  cards["1diamond"].id = "1diamond";
-  cards["2diamond"].face.loadFromImage( textures, sf::IntRect(74,295,72,96) );
-  cards["2diamond"].shape.setTexture( &cards["2diamond"].face );
-  cards["2diamond"].id = "2diamond";
-  cards["3diamond"].face.loadFromImage( textures, sf::IntRect(147,295,72,96) );
-  cards["3diamond"].shape.setTexture( &cards["3diamond"].face );
-  cards["3diamond"].id = "3diamond";
-  cards["4diamond"].face.loadFromImage( textures, sf::IntRect(220,295,72,96) );
-  cards["4diamond"].shape.setTexture( &cards["4diamond"].face );
-  cards["4diamond"].id = "4diamond";
-  cards["5diamond"].face.loadFromImage( textures, sf::IntRect(293,295,72,96) );
-  cards["5diamond"].shape.setTexture( &cards["5diamond"].face );
-  cards["5diamond"].id = "5diamond";
-  cards["6diamond"].face.loadFromImage( textures, sf::IntRect(366,295,72,96) );
-  cards["6diamond"].shape.setTexture( &cards["6diamond"].face );
-  cards["6diamond"].id = "6diamond";
-  cards["7diamond"].face.loadFromImage( textures, sf::IntRect(439,295,72,96) );
-  cards["7diamond"].shape.setTexture( &cards["7diamond"].face );
-  cards["7diamond"].id = "7diamond";
-  cards["8diamond"].face.loadFromImage( textures, sf::IntRect(512,295,72,96) );
-  cards["8diamond"].shape.setTexture( &cards["8diamond"].face );
-  cards["8diamond"].id = "8diamond";
-  cards["9diamond"].face.loadFromImage( textures, sf::IntRect(585,295,72,96) );
-  cards["9diamond"].shape.setTexture( &cards["9diamond"].face );
-  cards["9diamond"].id = "9diamond";
-  cards["10diamond"].face.loadFromImage( textures, sf::IntRect(658,295,72,96) );
-  cards["10diamond"].shape.setTexture( &cards["10diamond"].face );
-  cards["10diamond"].id = "10diamond";
-  cards["jackdiamond"].face.loadFromImage( textures, sf::IntRect(731,295,72,96) );
-  cards["jackdiamond"].shape.setTexture( &cards["jackdiamond"].face );
-  cards["jackdiamond"].id = "jackdiamond";
-  cards["queendiamond"].face.loadFromImage( textures, sf::IntRect(804,295,72,96) );
-  cards["queendiamond"].shape.setTexture( &cards["queendiamond"].face );
-  cards["queendiamond"].id = "queendiamond";
-  cards["kingdiamond"].face.loadFromImage( textures, sf::IntRect(877,295,72,96) );
-  cards["kingdiamond"].shape.setTexture( &cards["kingdiamond"].face );
-  cards["kingdiamond"].id = "kingdiamond";
+  for ( unsigned int c = 0; c < cards.size(); c++ )
+    cards[c].shape.setTexture( cards[c].face, true );
 }
 
-std::string randomCard()
+Card* randomCard()
 {
   int n = rand() % unusedCards.size();
-  std::string returnCard = unusedCards[n];
+  Card* returnCard = unusedCards[n];
 
   unusedCards.erase( unusedCards.begin() + n );
 
@@ -244,7 +264,7 @@ void setCardPositions()
   {
     for ( unsigned int y = 0; y < board[x].size(); y++ )
     {
-      cards[ board[x][y] ].shape.setPosition( sf::Vector2f( x * window.getSize().x * 1/10, y * window.getSize().y * 1/20 ) );
+      board[x][y]->shape.setPosition( sf::Vector2f( x * window.getSize().x * 1/10, y * window.getSize().y * 1/20 ) );
       std::cout << x << "," << y << ":" << x * window.getSize().x * 1/10 << "," << y * window.getSize().y * 1/20 << std::endl;
     }
   }

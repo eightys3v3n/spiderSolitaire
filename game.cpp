@@ -7,7 +7,7 @@
 #include "cards.hpp"
 
 extern std::vector< std::vector< Card* > > board;
-extern std::vector< std::string > unusedCards, playingCards, discardCards;
+extern std::vector< Card* > unusedCards;
 extern std::vector< Card > cards;
 extern sf::RenderWindow window;
 
@@ -15,14 +15,12 @@ void newGame()
 {
   unsigned int faceDownCount = 5;
 
-  discardCards.resize( 0 );
   unusedCards.resize( 0 );
 
-  for ( unsigned int decks = 0; decks < 8; decks++ )
-    for ( auto& card : cards )
-      unusedCards.push_back( card.first + ":" + std::to_string(decks) );
+  for ( unsigned int c = 0; c < cards.size(); c++ )
+    unusedCards.push_back( &cards[c] );
 
-  board.resize( 2 );
+  board.resize( 10 );
 
   std::cout << "original" << std::endl;
 
@@ -38,17 +36,17 @@ void newGame()
       if ( y < faceDownCount )
       {
         board[x][y] = randomCard();
-        cards[ board[x][y] ].shape.setPosition( sf::Vector2f( x * window.getSize().x * 1/10, y * window.getSize().y * 1/20 ) );
-        cards[ board[x][y] ].shape.setTexture( cards[ board[x][y] ].back, true ); // set texture to the card back
+        board[x][y]->shape.setPosition( sf::Vector2f( x * window.getSize().x * 1/10, y * window.getSize().y * 1/20 ) );
+        board[x][y]->shape.setTexture( board[x][y]->back, true ); // set texture to the card back
       }
       else
       {
         board[x][y] = randomCard();
-        cards[ board[x][y] ].shape.setPosition( sf::Vector2f( x * window.getSize().x * 1/10, y * window.getSize().y * 1/20 ) );
-        cards[ board[x][y] ].shape.setTexture( &cards[ board[x][y] ].face, true ); // set texture to the card front
+        board[x][y]->shape.setPosition( sf::Vector2f( x * window.getSize().x * 1/10, y * window.getSize().y * 1/20 ) );
+        board[x][y]->shape.setTexture( board[x][y]->face, true ); // set texture to the card front
       }
 
-      std::cout << x << "," << y << ":" << cards[ board[x][y] ].id  << "(" << cards[ board[x][y] ].shape.getPosition().x << "," << cards[ board[x][y] ].shape.getPosition().y << ")" << std::endl;
+      std::cout << x << "," << y << ":" << board[x][y]->value  << "(" << board[x][y]->shape.getPosition().x << "," << board[x][y]->shape.getPosition().y << ")" << std::endl;
     }
   }
 
@@ -59,11 +57,9 @@ void newGame()
   {
     for ( unsigned int y = 0; y < board[x].size(); y++  )
     {
-      std::cout << x << "," << y << ":" << cards[ board[x][y] ].id  << "(" << cards[ board[x][y] ].shape.getPosition().x << "," << cards[ board[x][y] ].shape.getPosition().y << ")" << std::endl;
+      std::cout << x << "," << y << ":" << board[x][y]->value  << "(" << board[x][y]->shape.getPosition().x << "," << board[x][y]->shape.getPosition().y << ")" << std::endl;
     }
   }
 
   std::cout << "end" << std::endl;
-
-  //setCardPositions();
 }

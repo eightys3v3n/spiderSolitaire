@@ -8,7 +8,7 @@ extern sf::RenderWindow window;
 extern sf::RectangleShape newGameButton;
 extern std::vector< std::vector< Card* > > board;
 extern std::vector< sf::RectangleShape > layers;
-extern std::vector Card > cards;
+extern std::vector< Card > cards;
 extern bool running, playing;
 
 bool layerClicks( sf::Event* event )
@@ -22,15 +22,15 @@ bool layerClicks( sf::Event* event )
   return false;
 }
 
-std::string cardClicks( sf::Event* event )
+Card* cardClicks( sf::Event* event )
 {
-  std::string clickedCard = "none";
+  Card* clickedCard = nullptr;
 
   for ( unsigned int x = 0; x < board.size(); x++ )
   {
     for ( unsigned int y = 0; y < board[x].size(); y++ )
     {
-      if ( cards[ board[x][y] ].shape.getGlobalBounds().contains( sf::Vector2f( event->mouseButton.x, event->mouseButton.y ) ) )
+      if ( board[x][y]->shape.getGlobalBounds().contains( sf::Vector2f( event->mouseButton.x, event->mouseButton.y ) ) )
       {
         clickedCard = board[x][y];
         std::cout << "clicked card " << x << "," << y << std::endl;
@@ -44,7 +44,7 @@ std::string cardClicks( sf::Event* event )
 void input()
 {
   sf::Event event;
-  std::string clickedCard = "";
+  Card* clickedCard = nullptr;
 
   while( window.pollEvent( event ) )
   {
@@ -62,8 +62,8 @@ void input()
 
           if ( layerClicks( &event ) )
             std::cout << "new layer clicked" << std::endl;
-          else if ( ( clickedCard = cardClicks( &event ) ) != "none" )
-            std::cout << "card clicked " << clickedCard << std::endl;
+          else if ( ( clickedCard = cardClicks( &event ) ) != nullptr )
+            std::cout << "card clicked " << clickedCard->value << std::endl;
         }
         break;
     }

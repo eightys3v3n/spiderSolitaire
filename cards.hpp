@@ -1,5 +1,6 @@
 #include <string>
 
+void initializeTextures();
 void initializeCards();
-std::string randomCard();
+Card* randomCard();
 void setCardPositions();

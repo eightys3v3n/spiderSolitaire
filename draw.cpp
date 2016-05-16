@@ -12,7 +12,7 @@ extern std::vector< std::vector< Card* > > board;
 extern std::vector< Card > cards;
 extern bool playing;
 
-void reinitializeGraphics()
+void initializeGraphics()
 {
   newGameButton.setSize( sf::Vector2f( window.getSize().x * 1/10, window.getSize().y * 1/20 ) );
   newGameButton.setPosition( sf::Vector2f( window.getSize().x * 1/2 - newGameButton.getSize().x / 2, window.getSize().y * 2/49 ) );
@@ -39,9 +39,8 @@ void drawCards()
   {
     for ( unsigned int y = 0; y < board[x].size(); y++ )
     {
-      window.draw( cards[ board[x][y] ].shape );
+      window.draw( board[x][y]->shape );
       //std::cout << x << "," << y << ":" << cards[ board[x][y] ].shape.getPosition().x << "," << cards[ board[x][y] ].shape.getPosition().y << std::endl;
-      std::cout << x << "," << y << ":" << cards[ board[x][y] ].id << std::endl;
     }
   }
 }
