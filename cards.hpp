@@ -7,4 +7,5 @@ Card* randomCard();
 sf::Vector2f cardPosition(unsigned int x, unsigned int y);
 bool validMove( unsigned int x, unsigned int y, unsigned int newX );
 bool movableStack( unsigned int x, unsigned int y );
-void moveCard( unsigned int x, unsigned int y, unsigned int newX );
+void moveCards( unsigned int x, unsigned int y, unsigned int newX );
+void completeStack( unsigned int x );

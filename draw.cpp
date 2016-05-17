@@ -11,6 +11,7 @@ extern std::vector< sf::RectangleShape > layers;
 extern std::vector< std::vector< Card* > > board;
 extern std::vector< Card > cards;
 extern bool playing;
+extern unsigned int layersToDraw;
 
 void initializeGraphics()
 {
@@ -29,7 +30,7 @@ void initializeGraphics()
 
 void drawLayers()
 {
-  for ( unsigned int l = 0; l < layers.size(); l++ )
+  for ( unsigned int l = 0; l < layersToDraw; l++ )
     window.draw( layers[l] );
 }
 

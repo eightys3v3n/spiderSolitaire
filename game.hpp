@@ -1,1 +1,2 @@
 void newGame();
+void newLayer();

@@ -27,6 +27,7 @@ high_resolution_clock::time_point timeClicked;
 string suit = "spades";
 bool playing = false;
 bool running = true;
+unsigned int layersToDraw = 5;
 
 void initialize()
 {

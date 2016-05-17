@@ -5,6 +5,7 @@
 #include <SFML/System.hpp>
 #include "cardStructure.hpp"
 #include "cards.hpp"
+#include "game.hpp"
 
 extern sf::RenderWindow window;
 extern sf::RectangleShape newGameButton;
@@ -15,10 +16,11 @@ extern std::chrono::high_resolution_clock::time_point timeClicked;
 extern sf::Vector2i clickedCard;
 extern sf::Vector2i moveTo;
 extern bool running, playing;
+extern unsigned int layersToDraw;
 
 bool layerClicks( sf::Event* event )
 {
-  for ( unsigned int l = 0; l < layers.size(); l++ )
+  for ( unsigned int l = 0; l < layersToDraw; l++ )
   {
     if ( layers[l].getGlobalBounds().contains( sf::Vector2f( event->mouseButton.x, event->mouseButton.y ) ) )
       return true;
@@ -55,10 +57,10 @@ void input()
         if ( event.mouseButton.button == sf::Mouse::Left )
         {
           if ( newGameButton.getGlobalBounds().contains( sf::Vector2f( event.mouseButton.x, event.mouseButton.y ) ) )
-            std::cout << "new game" << std::endl;
+            newGame();
 
           if ( layerClicks( &event ) )
-            std::cout << "new layer" << std::endl;
+            newLayer();
           else if ( ( clickedCard = cardClicks( &event ) ) != sf::Vector2i( -1, -1 ) )
             timeClicked = std::chrono::high_resolution_clock::now();
         }
@@ -74,10 +76,7 @@ void input()
               if ( ( moveTo = cardClicks( &event ) ) != sf::Vector2i( -1, -1 ) )
               {
                 if ( validMove( clickedCard.x, clickedCard.y, moveTo.x ) )
-                  moveCard( clickedCard.x, clickedCard.y, moveTo.x );
-                else
-                  std::cout << "can't move (" << clickedCard.x << "," << clickedCard.y << ") onto (" << moveTo.x << "," << moveTo.y << ")" << std::endl;
-
+                  moveCards( clickedCard.x, clickedCard.y, moveTo.x );
               }
             }
           }

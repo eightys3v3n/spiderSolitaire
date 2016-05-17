@@ -136,55 +136,55 @@ void initializeCards()
     else if ( suit == "spades" )
     {
       cards[ 0 + 13 * d].value = 1;
-      //cards[ 0 + 13 * d].suit = "spades";
+      cards[ 0 + 13 * d].suit = "spades";
       cards[ 0 + 13 * d].face = &textures[13];
       cards[ 0 + 13 * d].back = &textures[52];
       cards[ 1 + 13 * d].value = 2;
-      //cards[ 1 + 13 * d].suit = "spades";
+      cards[ 1 + 13 * d].suit = "spades";
       cards[ 1 + 13 * d].face = &textures[14];
       cards[ 1 + 13 * d].back = &textures[52];
       cards[ 2 + 13 * d].value = 3;
-      //cards[ 2 + 13 * d].suit = "spades";
+      cards[ 2 + 13 * d].suit = "spades";
       cards[ 2 + 13 * d].face = &textures[15];
       cards[ 2 + 13 * d].back = &textures[52];
       cards[ 3 + 13 * d].value = 4;
-      //cards[ 3 + 13 * d].suit = "spades";
+      cards[ 3 + 13 * d].suit = "spades";
       cards[ 3 + 13 * d].face = &textures[16];
       cards[ 3 + 13 * d].back = &textures[52];
       cards[ 4 + 13 * d].value = 5;
-      //cards[ 4 + 13 * d].suit = "spades";
+      cards[ 4 + 13 * d].suit = "spades";
       cards[ 4 + 13 * d].face = &textures[17];
       cards[ 4 + 13 * d].back = &textures[52];
       cards[ 5 + 13 * d].value = 6;
-      //cards[ 5 + 13 * d].suit = "spades";
+      cards[ 5 + 13 * d].suit = "spades";
       cards[ 5 + 13 * d].face = &textures[18];
       cards[ 5 + 13 * d].back = &textures[52];
       cards[ 6 + 13 * d].value = 7;
-      //cards[ 6 + 13 * d].suit = "spades";
+      cards[ 6 + 13 * d].suit = "spades";
       cards[ 6 + 13 * d].face = &textures[19];
       cards[ 6 + 13 * d].back = &textures[52];
       cards[ 7 + 13 * d].value = 8;
-      //cards[ 7 + 13 * d].suit = "spades";
+      cards[ 7 + 13 * d].suit = "spades";
       cards[ 7 + 13 * d].face = &textures[20];
       cards[ 7 + 13 * d].back = &textures[52];
       cards[ 8 + 13 * d].value = 9;
-      //cards[ 8 + 13 * d].suit = "spades";
+      cards[ 8 + 13 * d].suit = "spades";
       cards[ 8 + 13 * d].face = &textures[21];
       cards[ 8 + 13 * d].back = &textures[52];
       cards[ 9 + 13 * d].value = 10;
-      //cards[ 9 + 13 * d].suit = "spades";
+      cards[ 9 + 13 * d].suit = "spades";
       cards[ 9 + 13 * d].face = &textures[22];
       cards[ 9 + 13 * d].back = &textures[52];
       cards[10 + 13 * d].value = 11;
-      //cards[10 + 13 * d].suit = "spades";
+      cards[10 + 13 * d].suit = "spades";
       cards[10 + 13 * d].face = &textures[23];
       cards[10 + 13 * d].back = &textures[52];
       cards[11 + 13 * d].value = 12;
-      //cards[11 + 13 * d].suit = "spades";
+      cards[11 + 13 * d].suit = "spades";
       cards[11 + 13 * d].face = &textures[24];
       cards[11 + 13 * d].back = &textures[52];
       cards[12 + 13 * d].value = 13;
-      //cards[12 + 13 * d].suit = "spades";
+      cards[12 + 13 * d].suit = "spades";
       cards[12 + 13 * d].face = &textures[25];
       cards[12 + 13 * d].back = &textures[52];
     }
@@ -294,13 +294,16 @@ sf::Vector2f cardPosition(unsigned int x, unsigned int y)
 
 bool movableStack( unsigned int x, unsigned int y )
 {
-  if ( board[x].size() - 1 != y )
-    return false;
+  if ( board[x].size() - 1 == y )
+    return true;
 
   for ( unsigned int c = y + 1; c < board[x].size(); c++ )
   {
-    if ( board[x][c-1]->value + 1 != board[x][y]->value )
+    if ( board[x][ c - 1 ]->value - 1 != board[x][c]->value )
+    {
+      std::cout << board[x][ c - 1 ]->value - 1 << " != " << board[x][c]->value << std::endl;
       return false;
+    }
   }
 
   return true;
@@ -322,12 +325,32 @@ bool validMove( unsigned int x, unsigned int y, unsigned int newX )
   return false;
 }
 
-void moveCard( unsigned int x, unsigned int y, unsigned int newX )
+void completeStack( unsigned int x )
 {
-  board[x][y]->shape.setPosition( cardPosition( newX, board[newX].size() ) );
-  board[newX].push_back( board[x][y] );
-  board[x].erase( board[x].begin() + y );
+  if ( board[x].size() < 13 )
+    return;
+
+  for ( unsigned int c = 1; c < 14; c++ )
+  {
+    if ( board[x][c]->value != c )
+      return;
+  }
+
+  std::cout << "complete stack!" << std::endl;
+}
+
+void moveCards( unsigned int x, unsigned int y, unsigned int newX )
+{
+  for ( unsigned int i = y; i < board[x].size(); i++ )
+  {
+    board[x][i]->shape.setPosition( cardPosition( newX, board[newX].size() ) );
+    board[newX].push_back( board[x][i] );
+    board[x].erase( board[x].begin() + i );
+    i--; // is this sloppy?
+  }
 
   if ( board[x][ y - 1 ]->shape.getTexture() == board[x][ y - 1 ]->back )
     board[x][ y - 1 ]->shape.setTexture( board[x][ y - 1 ]->face );
+
+  completeStack( newX );
 }
