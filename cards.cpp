@@ -313,4 +313,21 @@ bool validMove( unsigned int x, unsigned int y, unsigned int newX )
 
   if ( board[newX].size() == 0 )
     return true;
+
+  if ( board[x][y]->value + 1 == board[newX][ board[newX].size() - 1 ]->value )
+    return true;
+  else
+    return false;
+
+  return false;
+}
+
+void moveCard( unsigned int x, unsigned int y, unsigned int newX )
+{
+  board[x][y]->shape.setPosition( cardPosition( newX, board[newX].size() ) );
+  board[newX].push_back( board[x][y] );
+  board[x].erase( board[x].begin() + y );
+
+  if ( board[x][ y - 1 ]->shape.getTexture() == board[x][ y - 1 ]->back )
+    board[x][ y - 1 ]->shape.setTexture( board[x][ y - 1 ]->face );
 }
