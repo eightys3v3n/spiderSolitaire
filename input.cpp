@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "cardStructure.hpp"
+#include "cards.hpp"
 
 extern sf::RenderWindow window;
 extern sf::RectangleShape newGameButton;
@@ -22,21 +23,14 @@ bool layerClicks( sf::Event* event )
   return false;
 }
 
-Card* cardClicks( sf::Event* event )
+sf::Vector2i cardClicks( sf::Event* event )
 {
-  Card* clickedCard = nullptr;
+  sf::Vector2i clickedCard( -1, -1 );
 
   for ( unsigned int x = 0; x < board.size(); x++ )
-  {
     for ( unsigned int y = 0; y < board[x].size(); y++ )
-    {
       if ( board[x][y]->shape.getGlobalBounds().contains( sf::Vector2f( event->mouseButton.x, event->mouseButton.y ) ) )
-      {
-        clickedCard = board[x][y];
-        std::cout << "clicked card " << x << "," << y << std::endl;
-      }
-    }
-  }
+        clickedCard = {.x = (int)x, .y = (int)y};
 
   return clickedCard;
 }
@@ -44,7 +38,7 @@ Card* cardClicks( sf::Event* event )
 void input()
 {
   sf::Event event;
-  Card* clickedCard = nullptr;
+  sf::Vector2i clickedCard;
 
   while( window.pollEvent( event ) )
   {
@@ -58,12 +52,15 @@ void input()
         if ( event.mouseButton.button == sf::Mouse::Left )
         {
           if ( newGameButton.getGlobalBounds().contains( sf::Vector2f( event.mouseButton.x, event.mouseButton.y ) ) )
-            std::cout << "newGameButton clicked" << std::endl;
+            std::cout << "new game" << std::endl;
 
           if ( layerClicks( &event ) )
-            std::cout << "new layer clicked" << std::endl;
-          else if ( ( clickedCard = cardClicks( &event ) ) != nullptr )
-            std::cout << "card clicked " << clickedCard->value << std::endl;
+            std::cout << "new layer" << std::endl;
+          else if ( ( clickedCard = cardClicks( &event ) ) != sf::Vector2i( -1, -1 ) )
+          {
+            std::cout << "card clicked " << board[clickedCard.x][clickedCard.y]->value << std::endl;
+            std::cout << movableStack( clickedCard.x, clickedCard.y ) << std::endl;
+          }
         }
         break;
     }

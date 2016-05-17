@@ -22,44 +22,22 @@ void newGame()
 
   board.resize( 10 );
 
-  std::cout << "original" << std::endl;
-
   for ( unsigned int x = 0; x < board.size(); x++ )
   {
-    if ( x > 4 )
+    if ( x > 3 )
       faceDownCount = 4;
 
-    board[x].resize( faceDownCount + 1 );
+    board[x].resize( faceDownCount );
 
-    for ( unsigned int y = 0; y <= faceDownCount; y++ )
+    for ( unsigned int y = 0; y < faceDownCount; y++ )
     {
-      if ( y < faceDownCount )
-      {
-        board[x][y] = randomCard();
-        board[x][y]->shape.setPosition( sf::Vector2f( x * window.getSize().x * 1/10, y * window.getSize().y * 1/20 ) );
-        board[x][y]->shape.setTexture( board[x][y]->back, true ); // set texture to the card back
-      }
-      else
-      {
-        board[x][y] = randomCard();
-        board[x][y]->shape.setPosition( sf::Vector2f( x * window.getSize().x * 1/10, y * window.getSize().y * 1/20 ) );
-        board[x][y]->shape.setTexture( board[x][y]->face, true ); // set texture to the card front
-      }
-
-      std::cout << x << "," << y << ":" << board[x][y]->value  << "(" << board[x][y]->shape.getPosition().x << "," << board[x][y]->shape.getPosition().y << ")" << std::endl;
+      board[x][y] = randomCard();
+      board[x][y]->shape.setPosition( cardPosition( x, y ) );
+      board[x][y]->shape.setTexture( board[x][y]->back, true ); // set texture to the card back
     }
+
+    board[x].push_back( randomCard() );
+    board[x][ board[x].size() - 1 ]->shape.setPosition( cardPosition( x, board[x].size() - 1 ) );
+    board[x][ board[x].size() - 1 ]->shape.setTexture( board[x][ board[x].size() - 1 ]->face, true ); // set texture to the card front
   }
-
-  std::cout << "end" << std::endl;
-  std::cout << "board" << std::endl;
-
-  for ( unsigned int x = 0; x < board.size(); x++ )
-  {
-    for ( unsigned int y = 0; y < board[x].size(); y++  )
-    {
-      std::cout << x << "," << y << ":" << board[x][y]->value  << "(" << board[x][y]->shape.getPosition().x << "," << board[x][y]->shape.getPosition().y << ")" << std::endl;
-    }
-  }
-
-  std::cout << "end" << std::endl;
 }

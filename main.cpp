@@ -35,7 +35,7 @@ int main()
 {
   srand( time(NULL) );
 
-  window.create( VideoMode(800,500), "spider solitaire", Style::Close );
+  window.create( VideoMode(800,500), "spider solitaire", Style::Resize );
   window.setFramerateLimit( 31 );
 
   textureFile.loadFromFile( "textures.png" );

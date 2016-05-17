@@ -6,8 +6,9 @@ struct Card
 {
   Card();
 
-  std::string value;
-  sf::Texture* face;
-  sf::Texture* back;
+  unsigned int value = -1;
+  std::string suit = "";
+  sf::Texture* face = nullptr;
+  sf::Texture* back = nullptr;
   sf::RectangleShape shape;
 };

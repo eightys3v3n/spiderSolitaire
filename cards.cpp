@@ -80,89 +80,115 @@ void initializeCards()
   {
     if ( suit == "clubs" )
     {
-      cards[ 0 + 13 * d].value = "1club";
+      cards[ 0 + 13 * d].value = 1;
+      cards[ 0 + 13 * d].suit = "clubs";
       cards[ 0 + 13 * d].face = &textures[0];
       cards[ 0 + 13 * d].back = &textures[52];
-      cards[ 1 + 13 * d].value = "2club";
+      cards[ 1 + 13 * d].value = 2;
+      cards[ 1 + 13 * d].suit = "clubs";
       cards[ 1 + 13 * d].face = &textures[1];
       cards[ 1 + 13 * d].back = &textures[52];
-      cards[ 2 + 13 * d].value = "3club";
+      cards[ 2 + 13 * d].value = 3;
+      cards[ 2 + 13 * d].suit = "clubs";
       cards[ 2 + 13 * d].face = &textures[2];
       cards[ 2 + 13 * d].back = &textures[52];
-      cards[ 3 + 13 * d].value = "4club";
+      cards[ 3 + 13 * d].value = 4;
+      cards[ 3 + 13 * d].suit = "clubs";
       cards[ 3 + 13 * d].face = &textures[3];
       cards[ 3 + 13 * d].back = &textures[52];
-      cards[ 4 + 13 * d].value = "5club";
+      cards[ 4 + 13 * d].value = 5;
+      cards[ 4 + 13 * d].suit = "clubs";
       cards[ 4 + 13 * d].face = &textures[4];
       cards[ 4 + 13 * d].back = &textures[52];
-      cards[ 5 + 13 * d].value = "6club";
+      cards[ 5 + 13 * d].value = 6;
+      cards[ 5 + 13 * d].suit = "clubs";
       cards[ 5 + 13 * d].face = &textures[5];
       cards[ 5 + 13 * d].back = &textures[52];
-      cards[ 6 + 13 * d].value = "7club";
+      cards[ 6 + 13 * d].value = 7;
+      cards[ 6 + 13 * d].suit = "clubs";
       cards[ 6 + 13 * d].face = &textures[6];
       cards[ 6 + 13 * d].back = &textures[52];
-      cards[ 7 + 13 * d].value = "8club";
+      cards[ 7 + 13 * d].value = 8;
+      cards[ 7 + 13 * d].suit = "clubs";
       cards[ 7 + 13 * d].face = &textures[7];
       cards[ 7 + 13 * d].back = &textures[52];
-      cards[ 8 + 13 * d].value = "9club";
+      cards[ 8 + 13 * d].value = 9;
+      cards[ 8 + 13 * d].suit = "clubs";
       cards[ 8 + 13 * d].face = &textures[8];
       cards[ 8 + 13 * d].back = &textures[52];
-      cards[ 9 + 13 * d].value = "10club";
+      cards[ 9 + 13 * d].value = 10;
+      cards[ 9 + 13 * d].suit = "clubs";
       cards[ 9 + 13 * d].face = &textures[9];
       cards[ 9 + 13 * d].back = &textures[52];
-      cards[10 + 13 * d].value = "jackclub";
+      cards[10 + 13 * d].value = 11;
+      cards[10 + 13 * d].suit = "clubs";
       cards[10 + 13 * d].face = &textures[10];
       cards[10 + 13 * d].back = &textures[52];
-      cards[11 + 13 * d].value = "queenclub";
+      cards[11 + 13 * d].value = 12;
+      cards[11 + 13 * d].suit = "clubs";
       cards[11 + 13 * d].face = &textures[11];
       cards[11 + 13 * d].back = &textures[52];
-      cards[12 + 13 * d].value = "kingclub";
+      cards[12 + 13 * d].value = 13;
+      cards[12 + 13 * d].suit = "clubs";
       cards[12 + 13 * d].face = &textures[12];
       cards[12 + 13 * d].back = &textures[52];
     }
     else if ( suit == "spades" )
     {
-      cards[ 0 + 13 * d].value = "1spade";
+      cards[ 0 + 13 * d].value = 1;
+      //cards[ 0 + 13 * d].suit = "spades";
       cards[ 0 + 13 * d].face = &textures[13];
       cards[ 0 + 13 * d].back = &textures[52];
-      cards[ 1 + 13 * d].value = "2spade";
+      cards[ 1 + 13 * d].value = 2;
+      //cards[ 1 + 13 * d].suit = "spades";
       cards[ 1 + 13 * d].face = &textures[14];
       cards[ 1 + 13 * d].back = &textures[52];
-      cards[ 2 + 13 * d].value = "3spade";
+      cards[ 2 + 13 * d].value = 3;
+      //cards[ 2 + 13 * d].suit = "spades";
       cards[ 2 + 13 * d].face = &textures[15];
       cards[ 2 + 13 * d].back = &textures[52];
-      cards[ 3 + 13 * d].value = "4spade";
+      cards[ 3 + 13 * d].value = 4;
+      //cards[ 3 + 13 * d].suit = "spades";
       cards[ 3 + 13 * d].face = &textures[16];
       cards[ 3 + 13 * d].back = &textures[52];
-      cards[ 4 + 13 * d].value = "5spade";
+      cards[ 4 + 13 * d].value = 5;
+      //cards[ 4 + 13 * d].suit = "spades";
       cards[ 4 + 13 * d].face = &textures[17];
       cards[ 4 + 13 * d].back = &textures[52];
-      cards[ 5 + 13 * d].value = "6spade";
+      cards[ 5 + 13 * d].value = 6;
+      //cards[ 5 + 13 * d].suit = "spades";
       cards[ 5 + 13 * d].face = &textures[18];
       cards[ 5 + 13 * d].back = &textures[52];
-      cards[ 6 + 13 * d].value = "7spade";
+      cards[ 6 + 13 * d].value = 7;
+      //cards[ 6 + 13 * d].suit = "spades";
       cards[ 6 + 13 * d].face = &textures[19];
       cards[ 6 + 13 * d].back = &textures[52];
-      cards[ 7 + 13 * d].value = "8spade";
+      cards[ 7 + 13 * d].value = 8;
+      //cards[ 7 + 13 * d].suit = "spades";
       cards[ 7 + 13 * d].face = &textures[20];
       cards[ 7 + 13 * d].back = &textures[52];
-      cards[ 8 + 13 * d].value = "9spade";
+      cards[ 8 + 13 * d].value = 9;
+      //cards[ 8 + 13 * d].suit = "spades";
       cards[ 8 + 13 * d].face = &textures[21];
       cards[ 8 + 13 * d].back = &textures[52];
-      cards[ 9 + 13 * d].value = "10spade";
+      cards[ 9 + 13 * d].value = 10;
+      //cards[ 9 + 13 * d].suit = "spades";
       cards[ 9 + 13 * d].face = &textures[22];
       cards[ 9 + 13 * d].back = &textures[52];
-      cards[10 + 13 * d].value = "jackspade";
+      cards[10 + 13 * d].value = 11;
+      //cards[10 + 13 * d].suit = "spades";
       cards[10 + 13 * d].face = &textures[23];
       cards[10 + 13 * d].back = &textures[52];
-      cards[11 + 13 * d].value = "queenspade";
+      cards[11 + 13 * d].value = 12;
+      //cards[11 + 13 * d].suit = "spades";
       cards[11 + 13 * d].face = &textures[24];
       cards[11 + 13 * d].back = &textures[52];
-      cards[12 + 13 * d].value = "kingspade";
+      cards[12 + 13 * d].value = 13;
+      //cards[12 + 13 * d].suit = "spades";
       cards[12 + 13 * d].face = &textures[25];
       cards[12 + 13 * d].back = &textures[52];
     }
-/*    cards[26 + 13 * d].value = "1heart";
+    /*cards[26 + 13 * d].value = "1heart";
     cards[26 + 13 * d].face = &textures[26];
     cards[26 + 13 * d].back = &textures[52];
     cards[27 + 13 * d].value = "2heart";
@@ -256,23 +282,35 @@ Card* randomCard()
   return returnCard;
 }
 
-void setCardPositions()
-{
-  std::cout << "positions" << std::endl;
-
-  for ( unsigned int x = 0; x < board.size(); x++ )
-  {
-    for ( unsigned int y = 0; y < board[x].size(); y++ )
-    {
-      board[x][y]->shape.setPosition( sf::Vector2f( x * window.getSize().x * 1/10, y * window.getSize().y * 1/20 ) );
-      std::cout << x << "," << y << ":" << x * window.getSize().x * 1/10 << "," << y * window.getSize().y * 1/20 << std::endl;
-    }
-  }
-
-  std::cout << "end" << std::endl;
-}
-
 sf::Vector2f cardPosition(unsigned int x, unsigned int y)
 {
+  sf::Vector2f r;
 
+  r.x = ( x * window.getSize().x * .1 ) + ( .5 * ( window.getSize().x * 1/10 - 72 ) );
+  r.y = y * window.getSize().y * .05 + topBar.getSize().y ;
+
+  return r;
+}
+
+bool movableStack( unsigned int x, unsigned int y )
+{
+  if ( board[x].size() - 1 != y )
+    return false;
+
+  for ( unsigned int c = y + 1; c < board[x].size(); c++ )
+  {
+    if ( board[x][c-1]->value + 1 != board[x][y]->value )
+      return false;
+  }
+
+  return true;
+}
+
+bool validMove( unsigned int x, unsigned int y, unsigned int newX )
+{
+  if ( !movableStack( x, y ) )
+    return false;
+
+  if ( board[newX].size() == 0 )
+    return true;
 }
