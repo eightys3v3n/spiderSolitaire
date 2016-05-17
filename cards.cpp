@@ -330,7 +330,7 @@ void completeStack( unsigned int x )
   if ( board[x].size() < 13 )
     return;
 
-  for ( unsigned int c = 1; c < 14; c++ )
+  for ( unsigned int c = 0; c < 13; c++ )
   {
     if ( board[x][c]->value != c )
       return;
@@ -349,8 +349,9 @@ void moveCards( unsigned int x, unsigned int y, unsigned int newX )
     i--; // is this sloppy?
   }
 
-  if ( board[x][ y - 1 ]->shape.getTexture() == board[x][ y - 1 ]->back )
-    board[x][ y - 1 ]->shape.setTexture( board[x][ y - 1 ]->face );
+  if ( board[x].size() > 0 )
+    if ( board[x][ y - 1 ]->shape.getTexture() == board[x][ y - 1 ]->back )
+      board[x][ y - 1 ]->shape.setTexture( board[x][ y - 1 ]->face );
 
   completeStack( newX );
 }
