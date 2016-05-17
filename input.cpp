@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <chrono>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "cardStructure.hpp"
@@ -10,6 +11,9 @@ extern sf::RectangleShape newGameButton;
 extern std::vector< std::vector< Card* > > board;
 extern std::vector< sf::RectangleShape > layers;
 extern std::vector< Card > cards;
+extern std::chrono::high_resolution_clock::time_point timeClicked;
+extern sf::Vector2i clickedCard;
+extern sf::Vector2i moveTo;
 extern bool running, playing;
 
 bool layerClicks( sf::Event* event )
@@ -38,7 +42,6 @@ sf::Vector2i cardClicks( sf::Event* event )
 void input()
 {
   sf::Event event;
-  sf::Vector2i clickedCard;
 
   while( window.pollEvent( event ) )
   {
@@ -57,9 +60,26 @@ void input()
           if ( layerClicks( &event ) )
             std::cout << "new layer" << std::endl;
           else if ( ( clickedCard = cardClicks( &event ) ) != sf::Vector2i( -1, -1 ) )
+            timeClicked = std::chrono::high_resolution_clock::now();
+        }
+        break;
+
+      case sf::Event::MouseButtonReleased:
+        if ( event.mouseButton.button == sf::Mouse::Left )
+        {
+          if ( clickedCard != sf::Vector2i( -1, -1 ) )
           {
-            std::cout << "card clicked " << board[clickedCard.x][clickedCard.y]->value << std::endl;
-            std::cout << movableStack( clickedCard.x, clickedCard.y ) << std::endl;
+            if( std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::high_resolution_clock::now() - timeClicked ).count() > 120 )
+            {
+              if ( ( moveTo = cardClicks( &event ) ) != sf::Vector2i( -1, -1 ) )
+              {
+                if ( validMove( clickedCard.x, clickedCard.y, moveTo.x ) )
+                  moveCard( clickedCard.x, clickedCard.y, moveTo.x );
+                else
+                  std::cout << "can't move (" << clickedCard.x << "," << clickedCard.y << ") onto (" << moveTo.x << "," << moveTo.y << ")" << std::endl;
+
+              }
+            }
           }
         }
         break;
