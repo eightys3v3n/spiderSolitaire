@@ -37,13 +37,8 @@ void drawLayers()
 void drawCards()
 {
   for ( unsigned int x = 0; x < board.size(); x++ )
-  {
     for ( unsigned int y = 0; y < board[x].size(); y++ )
-    {
       window.draw( board[x][y]->shape );
-      //std::cout << x << "," << y << ":" << cards[ board[x][y] ].shape.getPosition().x << "," << cards[ board[x][y] ].shape.getPosition().y << std::endl;
-    }
-  }
 }
 
 void draw()

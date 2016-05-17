@@ -15,6 +15,7 @@ extern std::vector< Card > cards;
 extern std::chrono::high_resolution_clock::time_point timeClicked;
 extern sf::Vector2i clickedCard;
 extern sf::Vector2i moveTo;
+extern std::vector< sf::FloatRect > columbs;
 extern bool running, playing;
 extern unsigned int layersToDraw;
 
@@ -35,8 +36,15 @@ sf::Vector2i cardClicks( sf::Event* event )
 
   for ( unsigned int x = 0; x < board.size(); x++ )
     for ( unsigned int y = 0; y < board[x].size(); y++ )
-      if ( board[x][y]->shape.getGlobalBounds().contains( sf::Vector2f( event->mouseButton.x, event->mouseButton.y ) ) )
+      if ( board[x][y]->shape.getGlobalBounds().contains( event->mouseButton.x, event->mouseButton.y ) )
         clickedCard = {.x = (int)x, .y = (int)y};
+
+  if ( clickedCard == sf::Vector2i( -1, -1 ) )
+  {
+    for ( unsigned int x = 0; x < 10; x++ )
+      if ( columbs[x].contains( event->mouseButton.x, event->mouseButton.y) )
+        clickedCard = {.x = (int)x, .y = 0};
+  }
 
   return clickedCard;
 }

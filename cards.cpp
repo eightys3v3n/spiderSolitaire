@@ -282,7 +282,7 @@ Card* randomCard()
   return returnCard;
 }
 
-sf::Vector2f cardPosition(unsigned int x, unsigned int y)
+sf::Vector2f cardPosition(unsigned int x, unsigned int y) // returns the position of a card at board position (x,y)
 {
   sf::Vector2f r;
 
@@ -300,10 +300,7 @@ bool movableStack( unsigned int x, unsigned int y )
   for ( unsigned int c = y + 1; c < board[x].size(); c++ )
   {
     if ( board[x][ c - 1 ]->value - 1 != board[x][c]->value )
-    {
-      std::cout << board[x][ c - 1 ]->value - 1 << " != " << board[x][c]->value << std::endl;
       return false;
-    }
   }
 
   return true;
