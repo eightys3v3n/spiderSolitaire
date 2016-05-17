@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <chrono>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "draw.hpp"
@@ -10,6 +11,7 @@
 #include "game.hpp"
 using namespace std;
 using namespace sf;
+using namespace std::chrono;
 
 RenderWindow window;
 RectangleShape newGameButton, topBar;
@@ -19,6 +21,9 @@ vector< Card > cards;
 vector< Card* > unusedCards;
 vector< Texture > textures;
 vector< vector< Card* > > board;
+Vector2i clickedCard;
+Vector2i moveTo;
+high_resolution_clock::time_point timeClicked;
 string suit = "spades";
 bool playing = false;
 bool running = true;
