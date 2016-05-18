@@ -282,12 +282,30 @@ Card* randomCard()
   return returnCard;
 }
 
-sf::Vector2f cardPosition(unsigned int x, unsigned int y) // returns the position of a card at board position (x,y)
+sf::Vector2f absoluteCardPosition(unsigned int x, unsigned int y) // returns the position of a card at board position (x,y)
 {
   sf::Vector2f r;
 
-  r.x = ( x * window.getSize().x * .1 ) + ( .5 * ( window.getSize().x * 1/10 - 72 ) );
-  r.y = y * window.getSize().y * .05 + topBar.getSize().y ;
+  r.x = ( x * window.getSize().x * .1 ) + ( .5 * ( window.getSize().x / 10 - 72 ) );
+  r.y = y * ( window.getSize().y / 20 ) + topBar.getSize().y ;
+
+  return r;
+}
+
+sf::Vector2f relativeCardPosition( unsigned int x, unsigned int y )
+{
+  sf::Vector2f r;
+
+  r.x = ( x * window.getSize().x * .1 ) + ( .5 * ( window.getSize().x / 10 - 72 ) );
+
+  if ( y == 0 )
+    r.y = topBar.getSize().y;
+  else if ( board[x].size() == y )
+    r.y = board[x][ board[x].size() - 1 ]->shape.getPosition().y + window.getSize().y / 20;
+  else if ( y > 0 && board[x].size() > y )
+    r.y = board[x][ y - 1 ]->shape.getPosition().y + window.getSize().y / 20;
+  else
+    r.y = y * ( window.getSize().y / 20 ) + topBar.getSize().y ;
 
   return r;
 }
@@ -308,6 +326,9 @@ bool movableStack( unsigned int x, unsigned int y )
 
 bool validMove( unsigned int x, unsigned int y, unsigned int newX )
 {
+  if ( x == newX )
+    return false;
+
   if ( !movableStack( x, y ) )
     return false;
 
@@ -327,20 +348,86 @@ void completeStack( unsigned int x )
   if ( board[x].size() < 13 )
     return;
 
-  for ( unsigned int c = 0; c < 13; c++ )
+  for ( unsigned int c = 0; c > 14; c++ )
   {
-    if ( board[x][c]->value != c )
+    std::cout << "checking " << board[x].size() - 1 - c << ":" << board[x][ board[x].size() - 1 - c ]->value << std::endl;
+    if ( board[x][ board[x].size() - 1 - c ]->value != c )
       return;
   }
 
-  std::cout << "complete stack!" << std::endl;
+  board[x].resize( board[x].size() - 13 );
+
+  if ( board[x][ board[x].size() - 1 ]->shape.getTexture() == board[x][ board[x].size() - 1 ]->back)
+    board[x][ board[x].size() - 1 ]->shape.setTexture( board[x][ board[x].size() - 1 ]->face );
+}
+
+unsigned int getMovableStackSize( unsigned int x )
+{
+  unsigned int stackSize = 1;
+
+  if ( board[x].size() == 0 )
+    return 0;
+
+  for ( unsigned int y = board[x].size() - 1; y > 0; y-- )
+  {
+    if ( board[x][y]->value + 1 != board[x][ y - 1 ]->value || board[x][y]->shape.getTexture() == board[x][y]->back )
+      break;
+
+    stackSize++;
+  }
+
+  return stackSize;
+}
+
+void resizeStack( unsigned int x )
+{
+  unsigned int movableStackSize = getMovableStackSize( x );
+
+  //if ( board[x][ board[x].size() - 1 ]->shape.getPosition().y + window.getSize().y / 20 <= window.getSize().y + topBar.getSize().y )
+    //return;
+
+  // all cards fit
+  if ( window.getSize().y - topBar.getSize().y - board[x].size() * window.getSize().y / 20 >= 0 )
+  {
+    for ( unsigned int y = 1; y < board[x].size(); y++ )
+      board[x][y]->shape.setPosition( absoluteCardPosition( x, y ) );
+  }
+  // the movable stack fits when all other cards are compressed
+  else if ( ( window.getSize().y - topBar.getSize().y ) - ( movableStackSize * window.getSize().y / 20 ) - ( ( board[x].size() - movableStackSize ) * window.getSize().y / 40 ) >= window.getSize().y / 20 )
+  {
+    for ( unsigned int y = 0; y < board[x].size(); y++ )
+    {
+      sf::Vector2f cachePosition = relativeCardPosition( x, y );
+
+      // if the card is under the second card in the movable stack
+      if ( y < board[x].size() + 1 - movableStackSize && y != 0 )
+        cachePosition.y -= window.getSize().y / 40;
+
+      board[x][y]->shape.setPosition( cachePosition );
+    }
+  }
+  // the movable stack fits if all other cards are hidden
+  else if ( window.getSize().y - topBar.getSize().y - movableStackSize * window.getSize().y / 20 >= 0 )
+  {
+    for ( unsigned int y = 0; y < board[x].size(); y++ )
+    {
+      if ( y < board[x].size() - movableStackSize - 1 )
+        board[x][y]->shape.setPosition( absoluteCardPosition( x, 0 ) );
+      else
+        board[x][y]->shape.setPosition( absoluteCardPosition( x, movableStackSize - ( board[x].size() - y ) ) );
+    }
+  }
+  else
+  {
+    std::cout << "screen is too damn small mate" << std::endl;
+  }
 }
 
 void moveCards( unsigned int x, unsigned int y, unsigned int newX )
 {
   for ( unsigned int i = y; i < board[x].size(); i++ )
   {
-    board[x][i]->shape.setPosition( cardPosition( newX, board[newX].size() ) );
+    board[x][i]->shape.setPosition( relativeCardPosition( newX, board[newX].size() ) );
     board[newX].push_back( board[x][i] );
     board[x].erase( board[x].begin() + i );
     i--; // is this sloppy?
@@ -350,5 +437,9 @@ void moveCards( unsigned int x, unsigned int y, unsigned int newX )
     if ( board[x][ y - 1 ]->shape.getTexture() == board[x][ y - 1 ]->back )
       board[x][ y - 1 ]->shape.setTexture( board[x][ y - 1 ]->face );
 
-  completeStack( newX );
+  if ( board[ newX ].size() > 12 )
+    completeStack( newX );
+
+  resizeStack( newX );
+  resizeStack( x );
 }

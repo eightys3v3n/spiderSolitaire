@@ -72,6 +72,14 @@ void input()
           else if ( ( clickedCard = cardClicks( &event ) ) != sf::Vector2i( -1, -1 ) )
             timeClicked = std::chrono::high_resolution_clock::now();
         }
+        else if ( event.mouseButton.button == sf::Mouse::Right )
+        {
+          if ( ( clickedCard = cardClicks( &event ) ) != sf::Vector2i( -1, -1 ) )
+          {
+            resizeStack( clickedCard.x );
+            //std::cout << getMovableStackSize( clickedCard.x ) << std::endl;
+          }
+        }
         break;
 
       case sf::Event::MouseButtonReleased:

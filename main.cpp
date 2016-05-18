@@ -17,6 +17,7 @@ RenderWindow window;
 RectangleShape newGameButton, topBar;
 Image textureFile;
 vector< RectangleShape > layers(5);
+vector< RectangleShape > completedStacks(8);
 vector< Card > cards;
 vector< Card* > unusedCards;
 vector< Texture > textures;
@@ -29,6 +30,7 @@ string suit = "spades";
 bool playing = false;
 bool running = true;
 unsigned int layersToDraw = 5;
+unsigned int completedStacksToDraw = 0;
 
 void initialize()
 {
@@ -48,7 +50,7 @@ int main()
   srand( time(NULL) );
 
   window.create( VideoMode(800,500), "spider solitaire", Style::Resize );
-  window.setFramerateLimit( 31 );
+  window.setFramerateLimit( 61 );
 
   textureFile.loadFromFile( "textures.png" );
 
@@ -56,9 +58,6 @@ int main()
   topBar.setFillColor( Color(0,0,0) );
 
   initialize();
-
-  for ( unsigned int l = 0; l < layers.size(); l++ )
-    layers[l].setTexture( &textures[52] );
 
   while( running )
   {
