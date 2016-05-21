@@ -329,6 +329,9 @@ bool validMove( unsigned int x, unsigned int y, unsigned int newX )
   if ( x == newX )
     return false;
 
+  // temp for debugging
+  //return true;
+
   if ( !movableStack( x, y ) )
     return false;
 
@@ -348,17 +351,19 @@ void completeStack( unsigned int x )
   if ( board[x].size() < 13 )
     return;
 
-  for ( unsigned int c = 0; c > 14; c++ )
+  for ( unsigned int c = 0; c < 13; c++ )
   {
-    std::cout << "checking " << board[x].size() - 1 - c << ":" << board[x][ board[x].size() - 1 - c ]->value << std::endl;
-    if ( board[x][ board[x].size() - 1 - c ]->value != c )
+    std::cout << "checking " << board[x].size() - 1 - c << ":" << board[x][ board[x].size() - 1 - c ]->value << " != " << c << std::endl;
+    if ( board[x][ board[x].size() - 1 - c ]->value != c + 1 )
       return;
   }
 
+  std::cout << "complete stack at " << x << std::endl;
   board[x].resize( board[x].size() - 13 );
 
-  if ( board[x][ board[x].size() - 1 ]->shape.getTexture() == board[x][ board[x].size() - 1 ]->back)
-    board[x][ board[x].size() - 1 ]->shape.setTexture( board[x][ board[x].size() - 1 ]->face );
+  if ( board[x].size() > 0 )
+    if ( board[x][ board[x].size() - 1 ]->shape.getTexture() == board[x][ board[x].size() - 1 ]->back )
+      board[x][ board[x].size() - 1 ]->shape.setTexture( board[x][ board[x].size() - 1 ]->face );
 }
 
 unsigned int getMovableStackSize( unsigned int x )
@@ -395,6 +400,8 @@ void resizeStack( unsigned int x )
   // the movable stack fits when all other cards are compressed
   else if ( ( window.getSize().y - topBar.getSize().y ) - ( movableStackSize * window.getSize().y / 20 ) - ( ( board[x].size() - movableStackSize ) * window.getSize().y / 40 ) >= window.getSize().y / 20 )
   {
+    std::cout << "half shrunk " << x << std::endl;
+
     for ( unsigned int y = 0; y < board[x].size(); y++ )
     {
       sf::Vector2f cachePosition = relativeCardPosition( x, y );
@@ -409,6 +416,8 @@ void resizeStack( unsigned int x )
   // the movable stack fits if all other cards are hidden
   else if ( window.getSize().y - topBar.getSize().y - movableStackSize * window.getSize().y / 20 >= 0 )
   {
+    std::cout << "stack only " << x << std::endl;
+
     for ( unsigned int y = 0; y < board[x].size(); y++ )
     {
       if ( y < board[x].size() - movableStackSize - 1 )
@@ -419,7 +428,7 @@ void resizeStack( unsigned int x )
   }
   else
   {
-    std::cout << "screen is too damn small mate" << std::endl;
+    std::cout << "screen is too small mate" << std::endl;
   }
 }
 
@@ -440,6 +449,6 @@ void moveCards( unsigned int x, unsigned int y, unsigned int newX )
   if ( board[ newX ].size() > 12 )
     completeStack( newX );
 
-  resizeStack( newX );
-  resizeStack( x );
+  //resizeStack( newX );
+  //resizeStack( x );
 }

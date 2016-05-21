@@ -49,9 +49,19 @@ void newGame()
 void newLayer()
 {
   Card* cardCache;
+  bool filledBoard = true;
+  int cardsOnBoard = 0;
 
   for ( unsigned int x = 0; x < board.size(); x++ )
+  {
+    cardsOnBoard += board[x].size();
+
     if ( board[x].size() == 0 )
+      filledBoard = false;
+  }
+
+  if ( ! filledBoard )
+    if ( cardsOnBoard > 10 )
       return;
 
   if ( layersToDraw != 0 )
@@ -70,4 +80,13 @@ void newLayer()
 
     layersToDraw--;
   }
+}
+
+void finishedGame()
+{
+  for ( unsigned int x = 0; x < board.size(); x++ )
+    if ( board[x].size() != 0 )
+      return;
+
+  std::cout << "game finished!" << std::endl;
 }

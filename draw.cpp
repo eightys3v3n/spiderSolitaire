@@ -70,6 +70,7 @@ void draw()
   window.clear( sf::Color::Green );
   // window.clear( sf::Color::Black );
   // window.draw( background );
+
   window.draw( topBar );
   window.draw( newGameButton );
 

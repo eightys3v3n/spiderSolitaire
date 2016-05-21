@@ -3,7 +3,7 @@ part=g++ -c -static --std=c++17 -Wall -Wextra -g
 all: main
 
 main: draw.o input.o cards.o game.o cardStructure.o main.o
-	g++ -static-libgcc -static --std=c++17 -Wall -Wextra -DSFML_STATIC draw.o input.o cards.o game.o cardStructure.o main.o -o main -lsfml-graphics-s-d -lsfml-window-s-d -lsfml-system-s-d -lstdc++ -lpthread -lc -lm
+	g++ -g --std=c++17 -Wall -Wextra draw.o input.o cards.o game.o cardStructure.o main.o -o main -lsfml-graphics-d -lsfml-window-d -lsfml-system-d
 
 draw.o: draw.cpp
 	$(part) draw.cpp -o draw.o
