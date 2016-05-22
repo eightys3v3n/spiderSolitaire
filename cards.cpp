@@ -452,3 +452,23 @@ void moveCards( unsigned int x, unsigned int y, unsigned int newX )
   //resizeStack( newX );
   //resizeStack( x );
 }
+
+void autoMoveCards( unsigned int x, unsigned int y )
+{
+  std::vector< sf::Vector2i > validMoves;
+
+  for ( unsigned int i = 0; i < board.size(); i++ )
+    if ( i != x )
+      if ( validMove( x, y, i ) )
+        validMoves.push_back( sf::Vector2i( i, getMovableStackSize(i) ) );
+
+  sf::Vector2i bestMove;
+  for ( unsigned int i = 0; i < x1.size(); i++ )
+  {
+    if ( p < x1[i] )
+    {
+      size = sizes[i];
+      p = x1[i];
+    }
+  }
+}

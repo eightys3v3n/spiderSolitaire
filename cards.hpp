@@ -12,3 +12,4 @@ void completeStack( unsigned int x );
 unsigned int getMovableStackSize( unsigned int x );
 void resizeStack( unsigned int x );
 void moveCards( unsigned int x, unsigned int y, unsigned int newX );
+void autoMoveCards( unsigned int x, unsigned int y, unsigned int newX );
