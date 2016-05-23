@@ -1,3 +1,6 @@
+#ifndef CARDSTRUCT_
+#define CARDSTRUCT_
+
 #include <string>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -11,3 +14,5 @@ struct Card
   sf::Texture* back = nullptr;
   sf::RectangleShape shape;
 };
+
+#endif // CARDSTRUCT_
