@@ -17,7 +17,7 @@ extern sf::Vector2i clickedCard;
 extern sf::Vector2i moveTo;
 extern std::vector< sf::FloatRect > columbs;
 extern bool running, playing;
-extern unsigned int layersToDraw;
+extern unsigned int layersToDraw, completedStacksToDraw;
 
 bool layerClicks( sf::Event* event )
 {
@@ -76,8 +76,10 @@ void input()
         {
           if ( ( clickedCard = cardClicks( &event ) ) != sf::Vector2i( -1, -1 ) )
           {
-            resizeStack( clickedCard.x );
+            //resizeStack( clickedCard.x );
             //std::cout << getMovableStackSize( clickedCard.x ) << std::endl;
+            std::cout << "+1 completed stacks" << std::endl;
+            completedStacksToDraw++;
           }
         }
         break;
@@ -94,6 +96,11 @@ void input()
                 if ( validMove( clickedCard.x, clickedCard.y, moveTo.x ) )
                   moveCards( clickedCard.x, clickedCard.y, moveTo.x );
               }
+            }
+            else
+            {
+              std::cout << "auto-move" << std::endl;
+              autoMoveCards( clickedCard.x, clickedCard.y );
             }
           }
         }
