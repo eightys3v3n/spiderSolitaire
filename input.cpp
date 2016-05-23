@@ -16,9 +16,14 @@ extern std::chrono::high_resolution_clock::time_point timeClicked;
 extern sf::Vector2i clickedCard;
 extern sf::Vector2i moveTo;
 extern std::vector< sf::FloatRect > columbs;
+<<<<<<< HEAD
 extern bool running, playing, holdingCard;
 extern unsigned int layersToDraw, completedStacksToDraw;
 sf::Vector2f offset;
+=======
+extern bool running, playing;
+extern unsigned int layersToDraw;
+>>>>>>> parent of f1e3538... game works! also prints in console when finished
 
 bool layerClicks( sf::Event* event )
 {
@@ -82,10 +87,13 @@ void input()
         {
           if ( ( clickedCard = cardClicks( &event ) ) != sf::Vector2i( -1, -1 ) )
           {
-            //resizeStack( clickedCard.x );
+            resizeStack( clickedCard.x );
             //std::cout << getMovableStackSize( clickedCard.x ) << std::endl;
+<<<<<<< HEAD
             //std::cout << "+1 completed stacks" << std::endl;
             //completedStacksToDraw++;
+=======
+>>>>>>> parent of f1e3538... game works! also prints in console when finished
           }
         }
         break;
@@ -106,11 +114,6 @@ void input()
                 else
                   board[clickedCard.x][clickedCard.y]->shape.setPosition( absoluteCardPosition( clickedCard.x, clickedCard.y ) );
               }
-            }
-            else
-            {
-              std::cout << "auto-move" << std::endl;
-              autoMoveCards( clickedCard.x, clickedCard.y );
             }
           }
         }

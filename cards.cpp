@@ -12,7 +12,6 @@ extern std::vector< sf::Texture > textures;
 extern sf::RenderWindow window;
 extern sf::RectangleShape topBar;
 extern std::string suit;
-extern unsigned int completedStacksToDraw;
 
 void initializeTextures()
 {
@@ -273,15 +272,6 @@ void initializeCards()
     cards[c].shape.setTexture( cards[c].face, true );
 }
 
-void finishedGame()
-{
-  for ( unsigned int x = 0; x < board.size(); x++ )
-    if ( board[x].size() != 0 )
-      return;
-
-  std::cout << "game finished!" << std::endl;
-}
-
 Card* randomCard()
 {
   int n = rand() % unusedCards.size();
@@ -368,17 +358,12 @@ void completeStack( unsigned int x )
       return;
   }
 
-  //std::cout << "complete stack at " << x << std::endl;
+  std::cout << "complete stack at " << x << std::endl;
   board[x].resize( board[x].size() - 13 );
-
 
   if ( board[x].size() > 0 )
     if ( board[x][ board[x].size() - 1 ]->shape.getTexture() == board[x][ board[x].size() - 1 ]->back )
       board[x][ board[x].size() - 1 ]->shape.setTexture( board[x][ board[x].size() - 1 ]->face );
-
-  completedStacksToDraw++;
-
-  finishedGame();
 }
 
 unsigned int getMovableStackSize( unsigned int x )
@@ -403,7 +388,6 @@ void resizeStack( unsigned int x )
 {
   unsigned int movableStackSize = getMovableStackSize( x );
 
-  // i don't remember what this is for so i'll leave it here for now.
   //if ( board[x][ board[x].size() - 1 ]->shape.getPosition().y + window.getSize().y / 20 <= window.getSize().y + topBar.getSize().y )
     //return;
 
@@ -455,7 +439,7 @@ void moveCards( unsigned int x, unsigned int y, unsigned int newX )
     board[x][i]->shape.setPosition( relativeCardPosition( newX, board[newX].size() ) );
     board[newX].push_back( board[x][i] );
     board[x].erase( board[x].begin() + i );
-    i--; // is this sloppy? i feel like i should have found a way to do this without changing i.
+    i--; // is this sloppy?
   }
 
   if ( board[x].size() > 0 )
@@ -465,34 +449,26 @@ void moveCards( unsigned int x, unsigned int y, unsigned int newX )
   if ( board[ newX ].size() > 12 )
     completeStack( newX );
 
-  resizeStack( newX );
-  resizeStack( x );
+  //resizeStack( newX );
+  //resizeStack( x );
 }
 
 void autoMoveCards( unsigned int x, unsigned int y )
 {
-  std::vector< sf::Vector2i > validMoves; // .x is the position, .y is the size of the stack
-
-  if ( ! movableStack( x, y ) )
-    return;
+  std::vector< sf::Vector2i > validMoves;
 
   for ( unsigned int i = 0; i < board.size(); i++ )
     if ( i != x )
       if ( validMove( x, y, i ) )
         validMoves.push_back( sf::Vector2i( i, getMovableStackSize(i) ) );
 
-  sf::Vector2i bestMove( -1, -1 );
-  for ( unsigned int i = 0; i < validMoves.size(); i++ )
+  sf::Vector2i bestMove;
+  for ( unsigned int i = 0; i < x1.size(); i++ )
   {
-    std::cout << bestMove.x << ":" << bestMove.y << " & " << validMoves[i].x << ":" << validMoves[i].y << std::endl;
-
-    if ( bestMove.y < validMoves[i].y )
+    if ( p < x1[i] )
     {
-      std::cout << "new best move" << std::endl;
-      bestMove = validMoves[i];
+      size = sizes[i];
+      p = x1[i];
     }
   }
-
-  if ( bestMove.x != -1 )
-    moveCards( x, y, bestMove.x );
 }

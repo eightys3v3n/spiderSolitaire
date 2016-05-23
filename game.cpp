@@ -82,3 +82,11 @@ void newLayer()
   }
 }
 
+void finishedGame()
+{
+  for ( unsigned int x = 0; x < board.size(); x++ )
+    if ( board[x].size() != 0 )
+      return;
+
+  std::cout << "game finished!" << std::endl;
+}
