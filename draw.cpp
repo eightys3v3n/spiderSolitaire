@@ -32,7 +32,7 @@ void initializeGraphics()
 
   for ( unsigned int c = 0; c < completedStacks.size(); c++ )
   {
-    completedStacks[c].setPosition( window.getSize().x - ( 10 * c + 10 ), window.getSize().y * 1/49 );
+    completedStacks[c].setPosition( window.getSize().x - ( 10 * c ) - 52, window.getSize().y * 1/49 );
     completedStacks[c].setSize( sf::Vector2f( window.getSize().x * 1/20, window.getSize().y * 5/49 ) );
 
     if ( suit == "clubs" )
@@ -48,12 +48,24 @@ void initializeGraphics()
 
 void drawLayers()
 {
+  if ( layersToDraw > 5 )
+  {
+    std::cout << "more than 5 layers left?\nwhat kind of wizard ARE YOU?!" << std::endl;
+    return;
+  }
+
   for ( unsigned int l = 0; l < layersToDraw; l++ )
     window.draw( layers[l] );
 }
 
 void drawCompletedStacks()
 {
+  if ( completedStacksToDraw > 8 )
+  {
+    std::cout << "more than 8 completed stacks?!\nare you a wizard?" << std::endl;
+    return;
+  }
+
   for ( unsigned int c = 0; c < completedStacksToDraw; c++ )
     window.draw( completedStacks[c] );
 }
@@ -75,7 +87,7 @@ void draw()
   window.draw( newGameButton );
 
   drawLayers();
-  //drawCompletedStacks();
+  drawCompletedStacks();
   drawCards();
 
   window.display();
