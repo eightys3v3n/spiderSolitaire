@@ -5,7 +5,7 @@ part=$(gcc) $(gccArgs) -c
 full=$(gcc) $(gccArgs) $(sfml)
 
 
-all: main test
+all: main
 
 -include makefiles/*.d
 
@@ -37,12 +37,6 @@ tmp/cardStructure.o: cardStructure.cpp
 
 tmp/main: main.cpp
 	$(part) main.cpp -o tmp/main
-
-test: tmp/draw.o tmp/input.o tmp/cards.o tmp/game.o tmp/cardStructure.o tmp/test
-	g++ -g --std=c++17 -Wall -Wextra $(sfml) tmp/*.o tmp/test -o test
-
-tmp/test: tests/main.cpp
-	$(part) tests/main.cpp -o tmp/test
 
 clean:
 	if [[ -n tmp/* ]]; then rm tmp/*; fi

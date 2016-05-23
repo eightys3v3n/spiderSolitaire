@@ -31,8 +31,8 @@ Vector2f clickOffset;
 high_resolution_clock::time_point timeClicked;
 int suit = 1; // 0-clubs, 1-spades
 bool playing = false;
-bool running = true;
-bool holding = false;
+bool running = true; // the game should be running.
+bool holdingCards = false; // user is dragging cards around the screen.
 unsigned int layersToDraw = 5;
 unsigned int completedStacksToDraw = 0;
 
@@ -58,10 +58,6 @@ int main()
 
   textureFile.loadFromFile( "textures.png" );
 
-  #ifdef TESTS
-  texturesTest();
-  #endif // TESTS
-
   initialize();
 
   while( running )
@@ -69,7 +65,8 @@ int main()
     draw();
     input();
   }
-}
 
+  return false;
+}
 
 // cards resource from http://www.milefoot.com/math/discrete/counting/images/cards.png

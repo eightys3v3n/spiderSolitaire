@@ -11,8 +11,9 @@ extern std::vector< sf::RectangleShape > layers, completedStacks;
 extern std::vector< std::vector< Card* > > board;
 extern std::vector< sf::Texture > textures;
 extern std::vector< Card > cards;
+extern sf::Vector2i clickedCard;
 extern int suit;
-extern bool playing;
+extern bool playing, holdingCards;
 extern unsigned int layersToDraw, completedStacksToDraw;
 
 void initializeGraphics()
@@ -71,6 +72,11 @@ void drawCards()
       window.draw( board[x][y]->shape );
 }
 
+void drawFloatingCards()
+{
+  window.draw( board[clickedCard.x][clickedCard.y]->shape );
+}
+
 void draw()
 {
   window.clear( sf::Color::Green );
@@ -83,6 +89,10 @@ void draw()
   drawLayers();
   drawCompletedStacks();
   drawCards();
+
+  // draw the floating cards again so their on top.
+  if ( holdingCards )
+    drawFloatingCards();
 
   window.display();
 }
