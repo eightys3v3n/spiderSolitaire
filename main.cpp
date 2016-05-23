@@ -29,6 +29,7 @@ high_resolution_clock::time_point timeClicked;
 string suit = "spades";
 bool playing = false;
 bool running = true;
+bool holdingCard = false;
 unsigned int layersToDraw = 5;
 unsigned int completedStacksToDraw = 0;
 
