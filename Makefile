@@ -1,28 +1,31 @@
 part=g++ -c -static --std=c++17 -Wall -Wextra -g
+sfml=-lsfml-graphics-d -lsfml-window-d -lsfml-system-d
 
-all: main
+all: tmp main #tests
 
-main: draw.o input.o cards.o game.o cardStructure.o main.o
-	g++ -g --std=c++17 -Wall -Wextra draw.o input.o cards.o game.o cardStructure.o main.o -o main -lsfml-graphics-d -lsfml-window-d -lsfml-system-d
+tmp:
+	mkdir tmp
 
-draw.o: draw.cpp
-	$(part) draw.cpp -o draw.o
+main: tmp/draw.o tmp/input.o tmp/cards.o tmp/game.o tmp/cardStructure.o tmp/main.o
+	g++ -g --std=c++17 -Wall -Wextra $(sfml) tmp/*.o -o main
 
-input.o: input.cpp
-	$(part) input.cpp -o input.o
+tmp/draw.o: draw.cpp
+	$(part) draw.cpp -o tmp/draw.o
 
-cards.o: cards.cpp
-	$(part) cards.cpp -o cards.o
+tmp/input.o: input.cpp
+	$(part) input.cpp -o tmp/input.o
 
-game.o: game.cpp
-	$(part) game.cpp -o game.o
+tmp/cards.o: cards.cpp
+	$(part) cards.cpp -o tmp/cards.o
 
-cardStructure.o: cardStructure.cpp
-	$(part) cardStructure.cpp -o cardStructure.o
+tmp/game.o: game.cpp
+	$(part) game.cpp -o tmp/game.o
 
-main.o: main.cpp
-	$(part) main.cpp -o main.o
+tmp/cardStructure.o: cardStructure.cpp
+	$(part) cardStructure.cpp -o tmp/cardStructure.o
+
+tmp/main.o: main.cpp
+	$(part) main.cpp -o tmp/main.o
 
 clean:
-	if [[ -n *.o ]]; then rm -rf *.o; fi
-	if [ -f main ]; then rm main; fi
+	if [ -d tmp ]; then rm -rf tmp; fi
