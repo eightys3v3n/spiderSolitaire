@@ -11,14 +11,25 @@ extern std::vector< std::vector< Card* > > board;
 extern std::vector< sf::Texture > textures;
 extern sf::RenderWindow window;
 extern sf::RectangleShape topBar;
-extern std::string suit;
+extern int suit;
 extern unsigned int completedStacksToDraw;
+extern sf::Vector2i cardSize, cardSpacing, cardBoarder, texturesStart;
 
 void initializeTextures()
 {
-  textures.resize(53);
+  textures.resize(14);
 
-  textures[ 0].loadFromImage( textureFile, sf::IntRect( 1,   1,72,96) ); // 1 clubs
+  for ( unsigned int card = 0; card < 13; card++ )
+  {
+    textures[ card + suit * 13 ].loadFromImage( textureFile, sf::IntRect(
+  /*x*/ card * cardSpacing.x + card * cardSize.x + texturesStart.x,
+  /*y*/ suit * cardSpacing.y + suit * cardSize.y + texturesStart.y, cardSize.x, cardSize.y
+      ) );
+  }
+
+  textures[13].loadFromImage( textureFile, sf::IntRect(  texturesStart.x, 4 * cardSize.y + 4 * cardSpacing.y + texturesStart.y, cardSize.x, cardSize.y) ); // card back
+
+  /*textures[ 0].loadFromImage( textureFile, sf::IntRect( 1,   1,72,96) ); // 1 clubs
   textures[ 1].loadFromImage( textureFile, sf::IntRect( 74,  1,72,96) );
   textures[ 2].loadFromImage( textureFile, sf::IntRect(147,  1,72,96) );
   textures[ 3].loadFromImage( textureFile, sf::IntRect(220,  1,72,96) );
@@ -69,14 +80,24 @@ void initializeTextures()
   textures[48].loadFromImage( textureFile, sf::IntRect(658,295,72,96) );
   textures[49].loadFromImage( textureFile, sf::IntRect(731,295,72,96) );
   textures[50].loadFromImage( textureFile, sf::IntRect(804,295,72,96) );
-  textures[51].loadFromImage( textureFile, sf::IntRect(877,295,72,96) ); // kind diamonds
-  textures[52].loadFromImage( textureFile, sf::IntRect(  1,393,72,96) ); // card back
+  textures[51].loadFromImage( textureFile, sf::IntRect(877,295,72,96) ); // kind diamonds*/
 }
 
 void initializeCards()
 {
   cards.resize( 13 * 8 );
 
+  for ( unsigned int d = 0; d < 8; d++ )
+  {
+    for ( unsigned int c = 0; c < 13; c++ )
+    {
+      cards[ c + 13 * d ].value = c;
+      cards[ c + 13 * d ].face = &textures[c];
+      cards[ c + 13 * d ].back = &textures[13];
+    }
+  }
+
+  /*
   for ( unsigned int d = 0; d < 8; d++ )
   {
     if ( suit == "clubs" )
@@ -189,7 +210,7 @@ void initializeCards()
       cards[12 + 13 * d].face = &textures[25];
       cards[12 + 13 * d].back = &textures[52];
     }
-    /*cards[26 + 13 * d].value = "1heart";
+    cards[26 + 13 * d].value = "1heart";
     cards[26 + 13 * d].face = &textures[26];
     cards[26 + 13 * d].back = &textures[52];
     cards[27 + 13 * d].value = "2heart";
@@ -267,10 +288,6 @@ void initializeCards()
     cards[51 + 13 * d].value = "kingdiamond";
     cards[51 + 13 * d].face = &textures[51];
     cards[51 + 13 * d].back = &textures[52];*/
-  }
-
-  for ( unsigned int c = 0; c < cards.size(); c++ )
-    cards[c].shape.setTexture( cards[c].face, true );
 }
 
 void finishedGame()

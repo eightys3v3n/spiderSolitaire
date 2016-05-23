@@ -1,3 +1,7 @@
+#ifdef TESTS
+#include "tests.hpp"
+#endif // TESTS
+
 #include <iostream>
 #include <vector>
 #include <map>
@@ -23,14 +27,18 @@ vector< Card* > unusedCards;
 vector< Texture > textures;
 vector< vector< Card* > > board;
 vector< FloatRect > columbs;
-Vector2i clickedCard;
-Vector2i moveTo;
+Vector2i clickedCard, moveTo;
+Vector2f clickOffset;
 high_resolution_clock::time_point timeClicked;
-string suit = "spades";
+int suit = 1; // 0-clubs, 1-spades
 bool playing = false;
 bool running = true;
+bool holding = false;
 unsigned int layersToDraw = 5;
 unsigned int completedStacksToDraw = 0;
+Vector2i texturesStart( 1, 1 );
+Vector2i cardSize( 72, 96 );
+Vector2i cardSpacing( 1, 1 );
 
 void initialize()
 {
@@ -54,8 +62,9 @@ int main()
 
   textureFile.loadFromFile( "textures.png" );
 
-  newGameButton.setFillColor( Color::Blue );
-  topBar.setFillColor( Color(0,0,0) );
+  #ifdef TESTS
+  texturesTest();
+  #endif // TESTS
 
   initialize();
 

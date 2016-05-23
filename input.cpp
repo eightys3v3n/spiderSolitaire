@@ -15,8 +15,9 @@ extern std::vector< Card > cards;
 extern std::chrono::high_resolution_clock::time_point timeClicked;
 extern sf::Vector2i clickedCard;
 extern sf::Vector2i moveTo;
+extern sf::Vector2f clickOffset;
 extern std::vector< sf::FloatRect > columbs;
-extern bool running, playing;
+extern bool running, playing, holding;
 extern unsigned int layersToDraw, completedStacksToDraw;
 
 bool layerClicks( sf::Event* event )
@@ -70,7 +71,14 @@ void input()
           if ( layerClicks( &event ) )
             newLayer();
           else if ( ( clickedCard = cardClicks( &event ) ) != sf::Vector2i( -1, -1 ) )
+          {
+            clickOffset.x = event.mouseButton.x - board[clickedCard.x][clickedCard.y]->shape.getPosition().x;
+            clickOffset.y = event.mouseButton.y - board[clickedCard.x][clickedCard.y]->shape.getPosition().y;
+
+            holding = true;
+
             timeClicked = std::chrono::high_resolution_clock::now();
+          }
         }
         else if ( event.mouseButton.button == sf::Mouse::Right )
         {
@@ -93,8 +101,12 @@ void input()
             {
               if ( ( moveTo = cardClicks( &event ) ) != sf::Vector2i( -1, -1 ) )
               {
+                std::cout << "trying drag move" << std::endl;
+
                 if ( validMove( clickedCard.x, clickedCard.y, moveTo.x ) )
                   moveCards( clickedCard.x, clickedCard.y, moveTo.x );
+                else
+                  board[clickedCard.x][clickedCard.y]->shape.setPosition( absoluteCardPosition( clickedCard.x, clickedCard.y ) );
               }
             }
             else
@@ -102,7 +114,16 @@ void input()
               std::cout << "auto-move" << std::endl;
               autoMoveCards( clickedCard.x, clickedCard.y );
             }
+
+            clickedCard = sf::Vector2i( -1, -1 );
           }
+        }
+        break;
+
+      case sf::Event::MouseMoved:
+        if ( holding )
+        {
+          board[clickedCard.x][clickedCard.y]->shape.setPosition( event.mouseMove.x - clickOffset.x, event.mouseMove.y - clickOffset.y );
         }
         break;
     }
