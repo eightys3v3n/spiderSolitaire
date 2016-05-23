@@ -1,13 +1,13 @@
 part=g++ -c -static --std=c++17 -Wall -Wextra -g
 sfml=-lsfml-graphics-d -lsfml-window-d -lsfml-system-d
 
-all: tmp main #tests
+all: tmp main tests
 
 tmp:
 	mkdir tmp
 
 main: tmp/draw.o tmp/input.o tmp/cards.o tmp/game.o tmp/cardStructure.o tmp/main.o
-	g++ -g --std=c++17 -Wall -Wextra $(sfml) tmp/*.o -o main
+	g++ -g --std=c++17 -Wall -Wextra $(sfml) tmp/*.o tmp/main -o main
 
 tmp/draw.o: draw.cpp
 	$(part) draw.cpp -o tmp/draw.o
@@ -25,7 +25,13 @@ tmp/cardStructure.o: cardStructure.cpp
 	$(part) cardStructure.cpp -o tmp/cardStructure.o
 
 tmp/main.o: main.cpp
-	$(part) main.cpp -o tmp/main.o
+	$(part) main.cpp -o tmp/main
+
+tests: main tmp/test
+	g++ -g --std=c++17 -Wall -Wextra $(sfml) tmp/*.o tmp/test -o test
+
+tmp/test: tests/main.cpp
+	$(part) tests/main.cpp -o tmp/test
 
 clean:
 	if [ -d tmp ]; then rm -rf tmp; fi
