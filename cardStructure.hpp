@@ -1,7 +1,6 @@
 #ifndef CARDSTRUCT_
 #define CARDSTRUCT_
 
-#include <string>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
