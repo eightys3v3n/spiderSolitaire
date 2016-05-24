@@ -94,12 +94,6 @@ sf::Vector2f relativeCardPosition( unsigned int x, unsigned int y )
   return r;
 }
 
-void resetStack( sf::Vector2i card )
-{
-  for ( unsigned int y = card.y; y < board[card.x].size(); y++ )
-    board[ card.x ][ y ]->shape.setPosition( absoluteCardPosition( card.x, y ) );
-}
-
 bool movableStack( unsigned int x, unsigned int y )
 {
   if ( board[x].size() - 1 == y )
@@ -222,6 +216,14 @@ void resizeStack( unsigned int x )
   {
     std::cout << "screen is too small mate" << std::endl;
   }
+}
+
+void resetStack( sf::Vector2i card )
+{
+  for ( unsigned int y = card.y; y < board[card.x].size(); y++ )
+    board[ card.x ][ y ]->shape.setPosition( absoluteCardPosition( card.x, y ) );
+
+  resizeStack( card.x );
 }
 
 void moveCards( unsigned int x, unsigned int y, unsigned int newX )
