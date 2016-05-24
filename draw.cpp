@@ -7,6 +7,8 @@
 
 extern sf::RenderWindow window;
 extern sf::RectangleShape newGameButton, topBar;
+extern sf::Image textureFile;
+extern sf::Texture newGameTexture;
 extern std::vector< sf::RectangleShape > layers, completedStacks;
 extern std::vector< std::vector< Card* > > board;
 extern std::vector< sf::Texture > textures;
@@ -18,13 +20,15 @@ extern unsigned int layersToDraw, completedStacksToDraw;
 
 void initializeGraphics()
 {
-  newGameButton.setSize( sf::Vector2f( window.getSize().x * 1/10, window.getSize().y * 1/20 ) );
+  newGameButton.setSize( sf::Vector2f( window.getSize().x * 1/8, window.getSize().y * 1/16 ) );
   newGameButton.setPosition( sf::Vector2f( window.getSize().x * 1/2 - newGameButton.getSize().x / 2, window.getSize().y * 2/49 ) );
-  newGameButton.setFillColor( sf::Color::Blue );
+  newGameTexture.loadFromImage( textureFile, sf::IntRect(74,389,128,32) );
+  newGameButton.setTexture( &newGameTexture, true );
 
   topBar.setPosition( sf::Vector2f(0,0) );
   topBar.setSize( sf::Vector2f( window.getSize().x, window.getSize().y * 1/7 ) );
   topBar.setFillColor( sf::Color::Black );
+
 
   for ( unsigned int l = 0; l < layers.size(); l++ )
   {

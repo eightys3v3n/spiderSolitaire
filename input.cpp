@@ -128,7 +128,10 @@ void input()
 
       case sf::Event::MouseButtonReleased:
         if ( event.mouseButton.button == sf::Mouse::Left )
+        {
           leftReleased( &event );
+          clickedCard = sf::Vector2i(-1,-1);
+        }
         break;
 
       case sf::Event::MouseMoved:

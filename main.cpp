@@ -16,6 +16,7 @@ using namespace std::chrono;
 RenderWindow window;
 RectangleShape newGameButton, topBar;
 Image textureFile;
+Texture newGameTexture;
 vector< RectangleShape > layers(5);
 vector< RectangleShape > completedStacks(8);
 vector< Card > cards;
