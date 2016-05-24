@@ -17,37 +17,74 @@ extern sf::Vector2i clickedCard;
 extern sf::Vector2i moveTo;
 extern sf::Vector2f clickOffset;
 extern std::vector< sf::FloatRect > columbs;
-extern bool running, playing, holding;
+extern bool running, holdingCards;
 extern unsigned int layersToDraw, completedStacksToDraw;
 
-bool layerClicks( sf::Event* event )
+bool clickedOnNewLayer( int x, int y )
 {
   for ( unsigned int l = 0; l < layersToDraw; l++ )
-  {
-    if ( layers[l].getGlobalBounds().contains( sf::Vector2f( event->mouseButton.x, event->mouseButton.y ) ) )
+    if ( layers[l].getGlobalBounds().contains( sf::Vector2f( x, y ) ) )
       return true;
-  }
 
   return false;
 }
 
-sf::Vector2i cardClicks( sf::Event* event )
+sf::Vector2i clickedOnCard( int clickX, int clickY )
 {
-  sf::Vector2i clickedCard( -1, -1 );
-
+  // was a card clicked?
   for ( unsigned int x = 0; x < board.size(); x++ )
-    for ( unsigned int y = 0; y < board[x].size(); y++ )
-      if ( board[x][y]->shape.getGlobalBounds().contains( event->mouseButton.x, event->mouseButton.y ) )
-        clickedCard = {.x = (int)x, .y = (int)y};
+    for ( int y = board[x].size() - 1; y > -1; y-- )
+      if ( board[x][y]->shape.getGlobalBounds().contains( clickX, clickY ) && sf::Vector2i( x, y ) != clickedCard )
+        return sf::Vector2i( x, y );
 
-  if ( clickedCard == sf::Vector2i( -1, -1 ) )
+  // was empty stack clicked?
+  for ( unsigned int x = 0; x < 10; x++ )
+    if ( columbs[x].contains( clickX, clickY) )
+      return sf::Vector2i( x, 0 );
+
+  return sf::Vector2i(-1,-1); // (-1,-1) if no card clicked
+}
+
+// move card(x,y) to columb d if possible
+void cardDrag( sf::Vector2i card, int d )
+{
+  // if released over another possible stack of cards
+  if ( validMove( card.x, card.y, d ) )
+    moveCards( card.x, card.y, d );
+
+  else
+    resetStack( card ); // put floating cards back in stack.
+}
+
+// left mouse button released
+void leftReleased( sf::Event* event )
+{
+  if ( holdingCards )
   {
-    for ( unsigned int x = 0; x < 10; x++ )
-      if ( columbs[x].contains( event->mouseButton.x, event->mouseButton.y) )
-        clickedCard = {.x = (int)x, .y = 0};
+    if( std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::high_resolution_clock::now() - timeClicked ).count() > 120 )
+    {
+      if ( ( moveTo = clickedOnCard( event->mouseButton.x, event->mouseButton.y ) ) != sf::Vector2i( -1, -1 ) )
+        cardDrag( clickedCard, moveTo.x ); // person dragged card.
+      else
+        resetStack( clickedCard ); // put card back on it's stack.
+    }
+
+    else
+      autoMoveCards( clickedCard.x, clickedCard.y ); // person clicked on card.
   }
 
-  return clickedCard;
+  holdingCards = false;
+}
+
+void moveFloatingCards( sf::Vector2f offset, int x, int y )
+{
+  sf::Vector2f move(0,0);
+
+  move.x = x - offset.x - board[clickedCard.x][clickedCard.y]->shape.getPosition().x;
+  move.y = y - offset.y - board[clickedCard.x][clickedCard.y]->shape.getPosition().y;
+
+  for ( unsigned int c = clickedCard.y; c < board[clickedCard.x].size(); c++ )
+    board[ clickedCard.x ][ c ]->shape.move( move.x, move.y );
 }
 
 void input()
@@ -68,63 +105,35 @@ void input()
           if ( newGameButton.getGlobalBounds().contains( sf::Vector2f( event.mouseButton.x, event.mouseButton.y ) ) )
             newGame();
 
-          if ( layerClicks( &event ) )
+          else if ( clickedOnNewLayer( event.mouseButton.x, event.mouseButton.y ) )
             newLayer();
-          else if ( ( clickedCard = cardClicks( &event ) ) != sf::Vector2i( -1, -1 ) )
+
+          // clicked on a card
+          else if ( ( clickedCard = clickedOnCard( event.mouseButton.x, event.mouseButton.y ) ) != sf::Vector2i( -1, -1 ) )
           {
-            clickOffset.x = event.mouseButton.x - board[clickedCard.x][clickedCard.y]->shape.getPosition().x;
-            clickOffset.y = event.mouseButton.y - board[clickedCard.x][clickedCard.y]->shape.getPosition().y;
+            if ( movableStack( clickedCard.x, clickedCard.y ) )
+            {
+              clickOffset.x = event.mouseButton.x - board[clickedCard.x][clickedCard.y]->shape.getPosition().x;
+              clickOffset.y = event.mouseButton.y - board[clickedCard.x][clickedCard.y]->shape.getPosition().y;
 
-            holding = true;
+              holdingCards = true;
 
-            timeClicked = std::chrono::high_resolution_clock::now();
+              timeClicked = std::chrono::high_resolution_clock::now();
+            }
           }
         }
-        else if ( event.mouseButton.button == sf::Mouse::Right )
-        {
-          if ( ( clickedCard = cardClicks( &event ) ) != sf::Vector2i( -1, -1 ) )
-          {
-            //resizeStack( clickedCard.x );
-            //std::cout << getMovableStackSize( clickedCard.x ) << std::endl;
-            std::cout << "+1 completed stacks" << std::endl;
-            completedStacksToDraw++;
-          }
-        }
+        //else if ( event.mouseButton.button == sf::Mouse::Right )
+          //std::cout << clickedOnCard( event.mouseButton.x, event.mouseButton.y ).x << "," << clickedOnCard( event.mouseButton.x, event.mouseButton.y ).y << std::endl;
         break;
 
       case sf::Event::MouseButtonReleased:
         if ( event.mouseButton.button == sf::Mouse::Left )
-        {
-          if ( clickedCard != sf::Vector2i( -1, -1 ) )
-          {
-            if( std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::high_resolution_clock::now() - timeClicked ).count() > 120 )
-            {
-              if ( ( moveTo = cardClicks( &event ) ) != sf::Vector2i( -1, -1 ) )
-              {
-                std::cout << "trying drag move" << std::endl;
-
-                if ( validMove( clickedCard.x, clickedCard.y, moveTo.x ) )
-                  moveCards( clickedCard.x, clickedCard.y, moveTo.x );
-                else
-                  board[clickedCard.x][clickedCard.y]->shape.setPosition( absoluteCardPosition( clickedCard.x, clickedCard.y ) );
-              }
-            }
-            else
-            {
-              std::cout << "auto-move" << std::endl;
-              autoMoveCards( clickedCard.x, clickedCard.y );
-            }
-
-            clickedCard = sf::Vector2i( -1, -1 );
-          }
-        }
+          leftReleased( &event );
         break;
 
       case sf::Event::MouseMoved:
-        if ( holding )
-        {
-          board[clickedCard.x][clickedCard.y]->shape.setPosition( event.mouseMove.x - clickOffset.x, event.mouseMove.y - clickOffset.y );
-        }
+        if ( holdingCards )
+          moveFloatingCards( clickOffset, event.mouseMove.x, event.mouseMove.y );
         break;
     }
   }

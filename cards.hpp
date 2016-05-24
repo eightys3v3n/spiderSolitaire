@@ -7,7 +7,7 @@ void finishedGame();
 Card* randomCard();
 sf::Vector2f absoluteCardPosition(unsigned int x, unsigned int y);
 sf::Vector2f relativeCardPosition(unsigned int x, unsigned int y);
-void resetCard( sf::Vector2i card );
+void resetStack( sf::Vector2i card );
 bool movableStack( unsigned int x, unsigned int y );
 bool validMove( unsigned int x, unsigned int y, unsigned int newX );
 void completeStack( unsigned int x );

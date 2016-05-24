@@ -94,9 +94,10 @@ sf::Vector2f relativeCardPosition( unsigned int x, unsigned int y )
   return r;
 }
 
-void resetCard( sf::Vector2i card )
+void resetStack( sf::Vector2i card )
 {
-  board[ card.x ][ card.y ]->shape.setPosition( absoluteCardPosition( card.x, card.y ) );
+  for ( unsigned int y = card.y; y < board[card.x].size(); y++ )
+    board[ card.x ][ y ]->shape.setPosition( absoluteCardPosition( card.x, y ) );
 }
 
 bool movableStack( unsigned int x, unsigned int y )
@@ -137,16 +138,15 @@ void completeStack( unsigned int x )
   if ( board[x].size() < 13 )
     return;
 
-  for ( unsigned int c = 0; c < 13; c++ )
+  for ( int c = 1; c < 14; c++ )
   {
-    //std::cout << "checking " << board[x].size() - 1 - c << ":" << board[x][ board[x].size() - 1 - c ]->value << " != " << c << std::endl;
-    if ( board[x][ board[x].size() - 1 - c ]->value != c + 1 )
+    //std::cout << "checking " << board[x].size() - c << ":" << board[x][board[x].size() - c]->value << " != " << c << std::endl;
+    if ( board[x][ board[x].size() - c ]->value != c - 1 )
       return;
   }
 
   //std::cout << "complete stack at " << x << std::endl;
   board[x].resize( board[x].size() - 13 );
-
 
   if ( board[x].size() > 0 )
     if ( board[x][ board[x].size() - 1 ]->shape.getTexture() == board[x][ board[x].size() - 1 ]->back )

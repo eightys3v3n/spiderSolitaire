@@ -74,7 +74,8 @@ void drawCards()
 
 void drawFloatingCards()
 {
-  window.draw( board[clickedCard.x][clickedCard.y]->shape );
+  for ( unsigned int c = clickedCard.y; c < board[clickedCard.x].size(); c++ )
+    window.draw( board[clickedCard.x][c]->shape );
 }
 
 void draw()
