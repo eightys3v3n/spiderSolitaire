@@ -8,7 +8,7 @@ struct Card
 {
   Card();
 
-  unsigned int value = -1;
+  int value = -1;
   sf::Texture* face = nullptr;
   sf::Texture* back = nullptr;
   sf::RectangleShape shape;
