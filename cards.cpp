@@ -15,6 +15,7 @@ extern int suit;
 extern unsigned int completedStacksToDraw;
 extern sf::Vector2i cardSize, cardSpacing, cardBoarder, texturesStart;
 
+// create textures from the texture file.
 void initializeTextures()
 {
   textures.resize(14);
@@ -32,6 +33,7 @@ void initializeTextures()
   textures[13].loadFromImage( textureFile, sf::IntRect(  texturesStart.x, 4 * cardSize.y + 4 * cardSpacing.y + texturesStart.y, cardSize.x, cardSize.y) ); // card back
 }
 
+// create 8 stacks of ace-king in cards and set their face & back texture.
 void initializeCards()
 {
   cards.resize( 13 * 8 );
@@ -47,15 +49,18 @@ void initializeCards()
   }
 }
 
-void finishedGame()
+// if the board has no cards, return true.
+bool finishedGame()
 {
   for ( unsigned int x = 0; x < board.size(); x++ )
     if ( board[x].size() != 0 )
-      return;
+      return false;
 
   std::cout << "game finished!" << std::endl;
+  return true;
 }
 
+// returns a pointer to a random card in unusedCards.
 Card* randomCard()
 {
   int n = rand() % unusedCards.size();
@@ -66,6 +71,7 @@ Card* randomCard()
   return returnCard;
 }
 
+// returns the position in pixels of the board position x,y.
 sf::Vector2f absoluteCardPosition(unsigned int x, unsigned int y) // returns the position of a card at board position (x,y)
 {
   sf::Vector2f r;
@@ -76,6 +82,7 @@ sf::Vector2f absoluteCardPosition(unsigned int x, unsigned int y) // returns the
   return r;
 }
 
+// returns the position in pixels of card x,y-1, + ( 1/20 of the window height ).
 sf::Vector2f relativeCardPosition( unsigned int x, unsigned int y )
 {
   sf::Vector2f r;
@@ -94,6 +101,8 @@ sf::Vector2f relativeCardPosition( unsigned int x, unsigned int y )
   return r;
 }
 
+// returns true if the card can be moved; all the cards after card x,y are stacked correctly.
+// make this return true all the time to allow moving cards to any stack you want regardless of the card order.
 bool movableStack( unsigned int x, unsigned int y )
 {
   if ( board[x].size() - 1 == y )
@@ -108,6 +117,7 @@ bool movableStack( unsigned int x, unsigned int y )
   return true;
 }
 
+// returns true if the card(s) at and on top of card x,y can be moved to columb newX.
 bool validMove( unsigned int x, unsigned int y, unsigned int newX )
 {
   if ( x == newX )
@@ -127,6 +137,7 @@ bool validMove( unsigned int x, unsigned int y, unsigned int newX )
   return false;
 }
 
+// removes completed stacks (ace-king).
 void completeStack( unsigned int x )
 {
   if ( board[x].size() < 13 )
@@ -151,6 +162,7 @@ void completeStack( unsigned int x )
   finishedGame();
 }
 
+// returns the number of correctly stacked cards on columb x.
 unsigned int getMovableStackSize( unsigned int x )
 {
   unsigned int stackSize = 1;
@@ -169,11 +181,12 @@ unsigned int getMovableStackSize( unsigned int x )
   return stackSize;
 }
 
+// (de)compress stacks to fit on the screen.
 void resizeStack( unsigned int x )
 {
   unsigned int movableStackSize = getMovableStackSize( x );
 
-  // i don't remember what this is for so i'll leave it here for now.
+  // i don't remember what this is for so i'll leave it here for now, i'll remove it if nothing breaks.
   //if ( board[x][ board[x].size() - 1 ]->shape.getPosition().y + window.getSize().y / 20 <= window.getSize().y + topBar.getSize().y )
     //return;
 
@@ -218,6 +231,7 @@ void resizeStack( unsigned int x )
   }
 }
 
+// set all the cards to the un-compressed position, then re-compress them.
 void resetStack( sf::Vector2i card )
 {
   for ( unsigned int y = card.y; y < board[card.x].size(); y++ )
@@ -226,6 +240,7 @@ void resetStack( sf::Vector2i card )
   resizeStack( card.x );
 }
 
+// moves the card(s) on top of, and including, card x,y onto the top of stack newX.
 void moveCards( unsigned int x, unsigned int y, unsigned int newX )
 {
   for ( unsigned int i = y; i < board[x].size(); i++ )
@@ -247,6 +262,9 @@ void moveCards( unsigned int x, unsigned int y, unsigned int newX )
   resizeStack( x );
 }
 
+// moves card(s) at, and on top of, position x,y to the "best" position on the board.
+// moves to the left most columb in the case of a tie.
+// moves to the columb that will create the largest stack of correctly stacked cards.
 void autoMoveCards( unsigned int x, unsigned int y )
 {
   std::vector< sf::Vector2i > validMoves; // .x is the position, .y is the size of the stack
