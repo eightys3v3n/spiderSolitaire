@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <chrono>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "cardStructure.hpp"
@@ -8,6 +9,7 @@
 
 extern std::vector< std::vector< Card* > > board;
 extern std::vector< sf::RectangleShape > layers;
+extern std::chrono::high_resolution_clock::time_point startTime;
 extern std::vector< Card* > unusedCards;
 extern std::vector< Card > cards;
 extern sf::RenderWindow window;
@@ -45,6 +47,8 @@ void newGame()
     board[x][ board[x].size() - 1 ]->shape.setPosition( absoluteCardPosition( x, board[x].size() - 1 ) );
     board[x][ board[x].size() - 1 ]->shape.setTexture( board[x][ board[x].size() - 1 ]->face, true ); // set texture to the card front
   }
+
+  startTime = std::chrono::high_resolution_clock::now();
 }
 
 // add a random card to every columb.

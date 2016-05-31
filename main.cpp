@@ -74,40 +74,46 @@ RenderWindow window;
   vector< vector< Card* > > board;
 }
 
-// rectangle shapes for the card backs at the top left.
-vector< RectangleShape > layers(5);
+// misc
+{
+  // rectangle shapes for the card backs at the top left.
+  vector< RectangleShape > layers(5);
 
-// all textures are read from this image, which is read from TEXTURE_FILE.
-Image textureFile;
+  // all textures are read from this image, which is read from TEXTURE_FILE.
+  Image textureFile;
 
-// used to figure out which columb to place a card if there is no card in the columb currently.
-vector< FloatRect > columbs;
+  // used to figure out which columb to place a card if there is no card in the columb currently.
+  vector< FloatRect > columbs;
 
-// the position of the mouse relative to the top left of the card that it's holding.
-// so the card is at 0,0, if you click on the middle of the card, the offset is (half the width, half the height).
-// then the card will be drawn at mousePosition - offset.
-Vector2f clickOffset;
+  // the position of the mouse relative to the top left of the card that it's holding.
+  // so the card is at 0,0, if you click on the middle of the card, the offset is (half the width, half the height).
+  // then the card will be drawn at mousePosition - offset.
+  Vector2f clickOffset;
 
-// used to figure out if a card was clicked or is being dragged.
-high_resolution_clock::time_point timeClicked;
+  // used to figure out if a card was clicked or is being dragged.
+  high_resolution_clock::time_point timeClicked;
 
-// suit to play with; 0-clubs, 1-spades
-int suit = 1;
+  // suit to play with; 0-clubs, 1-spades
+  int suit = 1;
 
-// not sure what this is for?
-bool playing = false;
+  // not sure what this is for?
+  bool playing = false;
 
-// whether the game should be running.
-bool running = true;
+  // whether the game should be running.
+  bool running = true;
 
-// user is dragging cards around the screen.
-bool holdingCards = false;
+  // user is dragging cards around the screen.
+  bool holdingCards = false;
 
-// how many new layers does the player have left.
-unsigned int layersToDraw = 5;
+  // how many new layers does the player have left.
+  unsigned int layersToDraw = 5;
 
-// how many stacks has the user completed.
-unsigned int completedStacksToDraw = 0;
+  // how many stacks has the user completed.
+  unsigned int completedStacksToDraw = 0;
+
+  // time since newGame was called; the time someone has been playing.
+  high_resolution_clock::time_point startTime, endTime;
+}
 
 // loads textures.
 // sets shape's textures.

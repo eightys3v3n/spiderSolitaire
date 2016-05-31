@@ -6,6 +6,7 @@
 
 extern sf::Image textureFile;
 extern std::vector< Card > cards;
+extern std::chrono::high_resolution_clock::time_point startTime, endTime;
 extern std::vector< Card* > unusedCards;
 extern std::vector< std::vector< Card* > > board;
 extern std::vector< sf::Texture > textures;
@@ -56,7 +57,8 @@ bool finishedGame()
     if ( board[x].size() != 0 )
       return false;
 
-  std::cout << "game finished!" << std::endl;
+    endTime = std::chrono::high_resolution_clock::now();
+  std::cout << "game finished in " << std::chrono::duration_cast< std::chrono::seconds > ( endTime - startTime ).count() << "s" << std::endl;
   return true;
 }
 
