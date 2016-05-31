@@ -13,6 +13,7 @@ extern std::vector< Card > cards;
 extern sf::RenderWindow window;
 extern unsigned int layersToDraw, completedStacksToDraw;
 
+// reset everything for a new game.
 void newGame()
 {
   unsigned int faceDownCount = 5;
@@ -46,6 +47,7 @@ void newGame()
   }
 }
 
+// add a random card to every columb.
 void newLayer()
 {
   Card* cardCache;
@@ -81,4 +83,3 @@ void newLayer()
     layersToDraw--;
   }
 }
-
