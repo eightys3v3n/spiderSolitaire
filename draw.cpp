@@ -18,6 +18,7 @@ extern int suit;
 extern bool playing, holdingCards;
 extern unsigned int layersToDraw, completedStacksToDraw;
 
+// sets position & texture of menu elements.
 void initializeGraphics()
 {
   newGameButton.setSize( sf::Vector2f( window.getSize().x * 1/8, window.getSize().y * 1/16 ) );
@@ -45,30 +46,21 @@ void initializeGraphics()
   }
 }
 
+// draw how many more layers the player has left.
 void drawLayers()
 {
-  if ( layersToDraw > 5 )
-  {
-    std::cout << "more than 5 layers left?\nwhat kind of wizard ARE YOU?!" << std::endl;
-    return;
-  }
-
   for ( unsigned int l = 0; l < layersToDraw; l++ )
     window.draw( layers[l] );
 }
 
+// draws how many stacks the player has completed.
 void drawCompletedStacks()
 {
-  if ( completedStacksToDraw > 8 )
-  {
-    std::cout << "more than 8 completed stacks?!\nare you a wizard?" << std::endl;
-    return;
-  }
-
   for ( unsigned int c = 0; c < completedStacksToDraw; c++ )
     window.draw( completedStacks[c] );
 }
 
+// draws all the cards on the board.
 void drawCards()
 {
   for ( unsigned int x = 0; x < board.size(); x++ )
@@ -76,12 +68,14 @@ void drawCards()
       window.draw( board[x][y]->shape );
 }
 
+// draws the cards that are being dragged.
 void drawFloatingCards()
 {
   for ( unsigned int c = clickedCard.y; c < board[clickedCard.x].size(); c++ )
     window.draw( board[clickedCard.x][c]->shape );
 }
 
+// re-draws all elements.
 void draw()
 {
   window.clear( sf::Color::Green );
