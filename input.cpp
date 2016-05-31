@@ -20,6 +20,7 @@ extern std::vector< sf::FloatRect > columbs;
 extern bool running, holdingCards;
 extern unsigned int layersToDraw, completedStacksToDraw;
 
+// checks if x&y are inside the new layer buttons.
 bool clickedOnNewLayer( int x, int y )
 {
   for ( unsigned int l = 0; l < layersToDraw; l++ )
@@ -29,6 +30,7 @@ bool clickedOnNewLayer( int x, int y )
   return false;
 }
 
+// returns the board position of the card at clickX,clickY or -1,-1 if no card is at clickX,clickY.
 sf::Vector2i clickedOnCard( int clickX, int clickY )
 {
   // was a card clicked?
@@ -45,7 +47,7 @@ sf::Vector2i clickedOnCard( int clickX, int clickY )
   return sf::Vector2i(-1,-1); // (-1,-1) if no card clicked
 }
 
-// move card(x,y) to columb d if possible
+// move card(x,y) to columb d if possible, else move the stack back to where it was.
 void cardDrag( sf::Vector2i card, int d )
 {
   // if released over another possible stack of cards
@@ -56,7 +58,8 @@ void cardDrag( sf::Vector2i card, int d )
     resetStack( card ); // put floating cards back in stack.
 }
 
-// left mouse button released
+
+// events for when the left mouse button released.
 void leftReleased( sf::Event* event )
 {
   if ( holdingCards )
@@ -76,6 +79,7 @@ void leftReleased( sf::Event* event )
   holdingCards = false;
 }
 
+// moves the floating cards to under the mouse.
 void moveFloatingCards( sf::Vector2f offset, int x, int y )
 {
   sf::Vector2f move(0,0);
@@ -87,6 +91,7 @@ void moveFloatingCards( sf::Vector2f offset, int x, int y )
     board[ clickedCard.x ][ c ]->shape.move( move.x, move.y );
 }
 
+// process window events.
 void input()
 {
   sf::Event event;
