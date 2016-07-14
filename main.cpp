@@ -18,16 +18,13 @@ RenderWindow window;
 
 
 // textures
-{
   // texture for newGame button.
   Texture newGameTexture;
 
   // storage for all textures read from textureFile.
   vector< Texture > textures;
-}
 
 // shapes
-{
   // the shape for the new game button.
   RectangleShape newGameButton;
 
@@ -36,10 +33,8 @@ RenderWindow window;
 
   // rectangle shapes for the cards at the top right, only 8 posible completed stacks so only 8 rectangles.
   vector< RectangleShape > completedStacks(8);
-}
 
 // positions in the textures file
-{
   // the start of the textures file (the current file has a 1 pixel boarder).
   // this could be set to zero and eliminated if i felt like removing the white space around the textures file.
   Vector2i texturesStart( 1, 1 );
@@ -49,20 +44,16 @@ RenderWindow window;
 
    // the space between each card (boarder). have a look at textures.png.
   Vector2i cardSpacing( 1, 1 );
-}
 
 
 // positions on the board
-{
   // contains the coords for the card that was clicked on or is being held; the coords refer to board[x][y].
   Vector2i clickedCard;
 
   // contains the position on the board that the mouse button was released over.
   Vector2i moveTo;
-}
 
 // cards
-{
   // all cards (8 x ( 1-K ) ) in one suit.
   vector< Card > cards;
 
@@ -72,10 +63,8 @@ RenderWindow window;
   // this is how cards are arranged; 0,0 is the top left most spot, 9,0 is the first card in the right most spot.
   // the y size changes depending on how many cards are in that position, n being the last card.
   vector< vector< Card* > > board;
-}
 
 // misc
-{
   // rectangle shapes for the card backs at the top left.
   vector< RectangleShape > layers(5);
 
@@ -113,7 +102,6 @@ RenderWindow window;
 
   // time since newGame was called; the time someone has been playing.
   high_resolution_clock::time_point startTime, endTime;
-}
 
 // loads textures.
 // sets shape's textures.

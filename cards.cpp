@@ -1,5 +1,6 @@
 #include <iostream>
 #include <map>
+#include <chrono>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "cardStructure.hpp"
@@ -57,7 +58,7 @@ bool finishedGame()
     if ( board[x].size() != 0 )
       return false;
 
-    endTime = std::chrono::high_resolution_clock::now();
+  endTime = std::chrono::high_resolution_clock::now();
   std::cout << "game finished in " << std::chrono::duration_cast< std::chrono::seconds > ( endTime - startTime ).count() << "s" << std::endl;
   return true;
 }
