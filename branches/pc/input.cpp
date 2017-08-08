@@ -3,26 +3,18 @@
 #include <chrono>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include "cardStructure.hpp"
-#include "cards.hpp"
-#include "game.hpp"
+#include "gameClass.hpp"
 
-extern sf::RenderWindow window;
-extern sf::RectangleShape newGameButton;
-extern std::vector< std::vector< Card* > > board;
-extern std::vector< sf::RectangleShape > layers;
-extern std::vector< Card > cards;
-extern std::chrono::high_resolution_clock::time_point timeClicked;
-extern sf::Vector2i clickedCard;
-extern sf::Vector2i moveTo;
-extern sf::Vector2f clickOffset;
-extern std::vector< sf::FloatRect > columbs;
-extern bool running, holdingCards;
-extern unsigned int layersToDraw, completedStacksToDraw;
+#ifdef ANDROID
+#define ANDROID_INPUT_ERROR 1
+#else
+#define PC_INPUT_ERROR 1
+#endif // ANDROID
 
 // checks if x&y are inside the new layer buttons.
-bool clickedOnNewLayer( int x, int y )
+bool Game::clickedOnNewLayer( int x, int y )
 {
+
   for ( unsigned int l = 0; l < layersToDraw; l++ )
     if ( layers[l].getGlobalBounds().contains( sf::Vector2f( x, y ) ) )
       return true;
@@ -31,8 +23,9 @@ bool clickedOnNewLayer( int x, int y )
 }
 
 // returns the board position of the card at clickX,clickY or -1,-1 if no card is at clickX,clickY.
-sf::Vector2i clickedOnCard( int clickX, int clickY )
+sf::Vector2i Game::clickedOnCard( int clickX, int clickY )
 {
+
   // was a card clicked?
   for ( unsigned int x = 0; x < board.size(); x++ )
     for ( int y = board[x].size() - 1; y > -1; y-- )
@@ -48,7 +41,7 @@ sf::Vector2i clickedOnCard( int clickX, int clickY )
 }
 
 // move card(x,y) to columb d if possible, else move the stack back to where it was.
-void cardDrag( sf::Vector2i card, int d )
+void Game::cardDrag( sf::Vector2i card, int d )
 {
   // if released over another possible stack of cards
   if ( validMove( card.x, card.y, d ) )
@@ -60,13 +53,14 @@ void cardDrag( sf::Vector2i card, int d )
 
 
 // events for when the left mouse button released.
-void leftReleased( sf::Event* event )
+void Game::leftReleased(sf::Vector2f p)
 {
+
   if ( holdingCards )
   {
     if( std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::high_resolution_clock::now() - timeClicked ).count() > 120 )
     {
-      if ( ( moveTo = clickedOnCard( event->mouseButton.x, event->mouseButton.y ) ) != sf::Vector2i( -1, -1 ) )
+      if ( ( moveTo = clickedOnCard( p.x, p.y ) ) != sf::Vector2i( -1, -1 ) )
         cardDrag( clickedCard, moveTo.x ); // person dragged card.
       else
         resetStack( clickedCard ); // put card back on it's stack.
@@ -80,8 +74,9 @@ void leftReleased( sf::Event* event )
 }
 
 // moves the floating cards to under the mouse.
-void moveFloatingCards( sf::Vector2f offset, int x, int y )
+void Game::moveFloatingCards( sf::Vector2f offset, int x, int y )
 {
+
   sf::Vector2f move(0,0);
 
   move.x = x - offset.x - board[clickedCard.x][clickedCard.y]->shape.getPosition().x;
@@ -91,58 +86,158 @@ void moveFloatingCards( sf::Vector2f offset, int x, int y )
     board[ clickedCard.x ][ c ]->shape.move( move.x, move.y );
 }
 
+#ifdef ANDROID
+int Game::androidInput(sf::Event& event)
+{
+  switch( event.type )
+  {
+    case sf::Event::Closed:
+      running = false;
+      window.close();
+      break;
+
+    case sf::Event::Resized:
+      view.setSize(event.size.width, event.size.height);
+      view.setCenter(event.size.width/2, event.size.height/2);
+      window.setView(view);
+      break;
+
+    case sf::Event::TouchBegan:
+      if (event.touch.finger == 0)
+      {
+        if ( newGameButton.getGlobalBounds().contains( sf::Vector2f(event.touch.x,event.touch.y) ) )
+          newGame();
+
+        else if ( clickedOnNewLayer( event.touch.x, event.touch.y ) )
+          newLayer();
+
+        else if (( clickedCard = clickedOnCard(event.touch.x, event.touch.y)) != sf::Vector2i(-1,-1))
+        {
+          if (movableStack(clickedCard.x, clickedCard.y))
+          {
+            clickOffset.x = event.mouseButton.x - board[clickedCard.x][clickedCard.y]->shape.getPosition().x;
+            clickOffset.y = event.mouseButton.y - board[clickedCard.x][clickedCard.y]->shape.getPosition().y;
+
+            holdingCards = true;
+
+            timeClicked = std::chrono::high_resolution_clock::now();
+          }
+        }
+      }
+      break;
+
+    case sf::Event::TouchMoved:
+      if (event.touch.finger == 0)
+      {
+        if (holdingCards)
+          moveFloatingCards(clickOffset, event.touch.x, event.touch.y);
+      }
+      break;
+
+    case sf::Event::TouchEnded:
+      if (event.touch.finger == 0)
+      {
+        leftReleased(sf::Vector2f(event.touch.x, event.touch.y));
+        clickedCard = sf::Vector2i(-1,-1);
+      }
+      break;
+
+    default:
+      break;
+  }
+
+  return 0;
+}
+#endif // ANDROID
+
+#ifndef ANDROID
+int Game::pcInput(sf::Event& event)
+{
+  switch( event.type )
+  {
+    case sf::Event::Closed:
+      running = false;
+      window.close();
+      break;
+
+    case sf::Event::Resized:
+      view.setSize(event.size.width, event.size.height);
+      view.setCenter(event.size.width/2, event.size.height/2);
+      window.setView(view);
+      break;
+
+    case sf::Event::MouseButtonPressed:
+      if ( event.mouseButton.button == sf::Mouse::Left )
+      {
+        if ( newGameButton.getGlobalBounds().contains( sf::Vector2f( event.mouseButton.x, event.mouseButton.y ) ) )
+          newGame();
+
+        else if ( clickedOnNewLayer( event.mouseButton.x, event.mouseButton.y ) )
+          newLayer();
+
+        // clicked on a card
+        else if ( ( clickedCard = clickedOnCard( event.mouseButton.x, event.mouseButton.y ) ) != sf::Vector2i( -1, -1 ) )
+        {
+          if ( movableStack( clickedCard.x, clickedCard.y ) )
+          {
+            clickOffset.x = event.mouseButton.x - board[clickedCard.x][clickedCard.y]->shape.getPosition().x;
+            clickOffset.y = event.mouseButton.y - board[clickedCard.x][clickedCard.y]->shape.getPosition().y;
+
+            holdingCards = true;
+
+            timeClicked = std::chrono::high_resolution_clock::now();
+          }
+        }
+      }
+      break;
+    case sf::Event::MouseButtonReleased:
+      if ( event.mouseButton.button == sf::Mouse::Left )
+      {
+        leftReleased( sf::Vector2f(event.mouseButton.x, event.mouseButton.y) );
+        clickedCard = sf::Vector2i(-1,-1);
+      }
+      break;
+
+    default:
+      break;
+  }
+
+  return 0;
+}
+#endif // !ANDROID
+
 // process window events.
-void input()
+int Game::input()
 {
   sf::Event event;
+  int r;
 
   while( window.pollEvent( event ) )
   {
-    switch( event.type )
+    #ifdef ANDROID
+    r = androidInput(event);
+
+    if (r)
     {
-      case sf::Event::Closed:
-        running = false;
-        break;
-
-      case sf::Event::MouseButtonPressed:
-        if ( event.mouseButton.button == sf::Mouse::Left )
-        {
-          if ( newGameButton.getGlobalBounds().contains( sf::Vector2f( event.mouseButton.x, event.mouseButton.y ) ) )
-            newGame();
-
-          else if ( clickedOnNewLayer( event.mouseButton.x, event.mouseButton.y ) )
-            newLayer();
-
-          // clicked on a card
-          else if ( ( clickedCard = clickedOnCard( event.mouseButton.x, event.mouseButton.y ) ) != sf::Vector2i( -1, -1 ) )
-          {
-            if ( movableStack( clickedCard.x, clickedCard.y ) )
-            {
-              clickOffset.x = event.mouseButton.x - board[clickedCard.x][clickedCard.y]->shape.getPosition().x;
-              clickOffset.y = event.mouseButton.y - board[clickedCard.x][clickedCard.y]->shape.getPosition().y;
-
-              holdingCards = true;
-
-              timeClicked = std::chrono::high_resolution_clock::now();
-            }
-          }
-        }
-        //else if ( event.mouseButton.button == sf::Mouse::Right )
-          //std::cout << clickedOnCard( event.mouseButton.x, event.mouseButton.y ).x << "," << clickedOnCard( event.mouseButton.x, event.mouseButton.y ).y << std::endl;
-        break;
-
-      case sf::Event::MouseButtonReleased:
-        if ( event.mouseButton.button == sf::Mouse::Left )
-        {
-          leftReleased( &event );
-          clickedCard = sf::Vector2i(-1,-1);
-        }
-        break;
-
-      case sf::Event::MouseMoved:
-        if ( holdingCards )
-          moveFloatingCards( clickOffset, event.mouseMove.x, event.mouseMove.y );
-        break;
+      switch(r)
+      {
+        default:
+          return ANDROID_INPUT_ERROR;
+      }
     }
+    #else
+    r = pcInput(event);
+
+    if (r)
+    {
+      switch(r)
+      {
+        default:
+          return PC_INPUT_ERROR;
+      }
+    }
+    #endif // ANDROID
   }
+
+  return 0;
 }

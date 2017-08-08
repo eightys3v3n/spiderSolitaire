@@ -1,8 +1,7 @@
-#include "cardStructure.hpp"
+#include "gameClass.hpp"
 
-Card::Card()
+Game::Card::Card(unsigned int x, unsigned int y)
 {
   shape.setPosition( sf::Vector2f(0,0) );
-  shape.setSize( sf::Vector2f(72,96) );
+  shape.setSize( sf::Vector2f(x, y) );
 }
-

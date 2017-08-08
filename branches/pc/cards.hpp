@@ -5,7 +5,7 @@
 #include <SFML/System.hpp>
 
 // create textures from the texture file.
-void initializeTextures();
+// void initializeTextures();
 
 // create 8 stacks of ace-king in cards and set their face & back texture.
 void initializeCards();

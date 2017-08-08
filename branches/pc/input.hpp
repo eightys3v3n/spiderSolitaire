@@ -1,6 +1,12 @@
 #ifndef INPUT_
 #define INPUT_
 
+#ifdef ANDROID
+#define ANDROID_INPUT_ERROR 1
+#else
+#define PC_INPUT_ERROR 1
+#endif // ANDROID
+
 // checks if x&y are inside the new layer buttons.
 bool clickedOnNewLayer( int x, int y );
 
@@ -11,12 +17,12 @@ sf::Vector2i clickedOnCard( int clickX, int clickY );
 void cardDrag( sf::Vector2i card, int d );
 
 // events for when the left mouse button released.
-void leftReleased( sf::Event* event );
+void leftReleased( sf::Vector2f p );
 
 // moves the floating cards to under the mouse.
 void moveFloatingCards( sf::Vector2f offset, int x, int y );
 
 // process window events.
-void input();
+int input();
 
 #endif // INPUT_

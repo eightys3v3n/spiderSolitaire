@@ -4,19 +4,10 @@
 #include <chrono>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include "cardStructure.hpp"
-#include "cards.hpp"
-
-extern std::vector< std::vector< Card* > > board;
-extern std::vector< sf::RectangleShape > layers;
-extern std::chrono::high_resolution_clock::time_point startTime;
-extern std::vector< Card* > unusedCards;
-extern std::vector< Card > cards;
-extern sf::RenderWindow window;
-extern unsigned int layersToDraw, completedStacksToDraw;
+#include "gameClass.hpp"
 
 // reset everything for a new game.
-void newGame()
+void Game::newGame()
 {
   unsigned int faceDownCount = 5;
 
@@ -52,7 +43,7 @@ void newGame()
 }
 
 // add a random card to every columb.
-void newLayer()
+void Game::newLayer()
 {
   Card* cardCache;
   bool filledBoard = true;

@@ -3,69 +3,87 @@
 #include <chrono>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include "cardStructure.hpp"
+#include "gameClass.hpp"
 
-extern sf::Image textureFile;
-extern std::vector< Card > cards;
-extern std::chrono::high_resolution_clock::time_point startTime, endTime;
-extern std::vector< Card* > unusedCards;
-extern std::vector< std::vector< Card* > > board;
-extern std::vector< sf::Texture > textures;
-extern sf::RenderWindow window;
-extern sf::RectangleShape topBar;
-extern int suit;
-extern unsigned int completedStacksToDraw;
-extern sf::Vector2i cardSize, cardSpacing, cardBoarder, texturesStart;
-
-// create textures from the texture file.
-void initializeTextures()
+void Game::scaleCards()
 {
-  textures.resize(14);
-
-  for ( unsigned int card = 0; card < 13; card++ )
+  for (auto& card: cards)
   {
-    //std::cerr << "card " << card << " @ " << card * cardSpacing.x + card * cardSize.x + texturesStart.x << "," << suit * cardSpacing.y + suit * cardSize.y + texturesStart.y << std::endl;
-    textures[ card ].loadFromImage( textureFile, sf::IntRect(
-  /*x*/ card * cardSpacing.x + card * cardSize.x + texturesStart.x,
-  /*y*/ suit * cardSpacing.y + suit * cardSize.y + texturesStart.y,
-       cardSize.x, cardSize.y
-      ) );
-  }
+    // scale card width relative to the screen width.
+    // 1/12th so there are 2/12ths of the screen width used for spacing the cards out.
+    if (card.shape.getSize().x != window.getSize().x / 12)
+      card.shape.setSize( sf::Vector2f(window.getSize().x / 12, card.shape.getSize().y) );
 
-  textures[13].loadFromImage( textureFile, sf::IntRect(  texturesStart.x, 4 * cardSize.y + 4 * cardSpacing.y + texturesStart.y, cardSize.x, cardSize.y) ); // card back
+    // scale y to correct perportions relative to x
+    if (card.shape.getSize().y != (texture_loader.cardSize.y * card.shape.getSize().x) / texture_loader.cardSize.x)
+      card.shape.setSize( sf::Vector2f(card.shape.getSize().x, (texture_loader.cardSize.y * card.shape.getSize().x) / texture_loader.cardSize.x) );
+  }
 }
 
+// create textures from the texture file.
+// void Game::initializeTextures()
+// {
+//   textures.resize(14);
+
+//   for ( unsigned int card = 0; card < 13; card++ )
+//   {
+//     sf::Texture texture = sf::Texture();
+
+//     //std::cerr << "card " << card << " @ " << card * cardSpacing.x + card * cardSize.x + texturesStart.x << "," << suit * cardSpacing.y + suit * cardSize.y + texturesStart.y << std::endl;
+//     //std::cerr << "  size " << cardSize.x << "," << cardSize.y << std::endl;
+//     sf::IntRect rect(
+// /*x*/ card * cardSpacing.x + card * cardSize.x + texturesStart.x,
+// /*y*/ suit * cardSpacing.y + suit * cardSize.y + texturesStart.y,
+//       cardSize.x,
+//       cardSize.y );
+
+//     texture.loadFromImage( textureFile, rect );
+//     textures[card] = texture;
+//   }
+
+//   textures[13].loadFromImage( textureFile, sf::IntRect(  texturesStart.x, 4 * cardSize.y + 4 * cardSpacing.y + texturesStart.y, cardSize.x, cardSize.y) ); // card back
+// }
+
 // create 8 stacks of ace-king in cards and set their face & back texture.
-void initializeCards()
+void Game::initializeCards()
 {
-  cards.resize( 13 * 8 );
+  //cards.resize( 13 * 8 );
 
   for ( unsigned int d = 0; d < 8; d++ )
   {
     for ( unsigned int c = 0; c < 13; c++ )
     {
-      cards[ c + 13 * d ].value = c;
-      cards[ c + 13 * d ].face = &textures[c];
-      cards[ c + 13 * d ].back = &textures[13];
+      Card te(texture_loader.cardSize.x, texture_loader.cardSize.y);
+      te.value = c;
+      te.face = &texture_loader.textures[c];
+      // te.face = &textures[c];
+      te.back = &texture_loader.textures[13];
+      // te.back = &textures[13];
+      cards.push_back(te);
     }
   }
+
+  scaleCards();
 }
 
 // if the board has no cards, return true.
-bool finishedGame()
+bool Game::finishedGame()
 {
+
   for ( unsigned int x = 0; x < board.size(); x++ )
     if ( board[x].size() != 0 )
       return false;
 
   endTime = std::chrono::high_resolution_clock::now();
   std::cout << "game finished in " << std::chrono::duration_cast< std::chrono::seconds > ( endTime - startTime ).count() << "s" << std::endl;
+
   return true;
 }
 
 // returns a pointer to a random card in unusedCards.
-Card* randomCard()
+Game::Card* Game::randomCard()
 {
+
   int n = rand() % unusedCards.size();
   Card* returnCard = unusedCards[n];
 
@@ -75,22 +93,29 @@ Card* randomCard()
 }
 
 // returns the position in pixels of the board position x,y.
-sf::Vector2f absoluteCardPosition(unsigned int x, unsigned int y) // returns the position of a card at board position (x,y)
+sf::Vector2f Game::absoluteCardPosition(unsigned int x, unsigned int y) // returns the position of a card at board position (x,y)
 {
   sf::Vector2f r;
 
-  r.x = ( x * window.getSize().x * .1 ) + ( .5 * ( window.getSize().x / 10 - 72 ) );
-  r.y = y * ( window.getSize().y / 20 ) + topBar.getSize().y ;
+  // cards every 1/10th the screen width.
+  r.x = (x * window.getSize().x / 10);
+
+  // cards are offset right by 1/2 the spacing between cards to avoid cards touching the left edge of the screen.
+  r.x += ((window.getSize().x / 10) - (window.getSize().x / 12)) / 2;
+
+  // cards are stacked 1/20th of the screen height down from the one under it.
+  r.y = y * ( window.getSize().y / 20 ) + topBar.getSize().y;
 
   return r;
 }
 
-// returns the position in pixels of card x,y-1, + ( 1/20 of the window height ).
-sf::Vector2f relativeCardPosition( unsigned int x, unsigned int y )
+// returns the position of the card at (x,y) relative to the previous card in that stack.
+// used in resizeStack() to compress stacks of cards.
+sf::Vector2f Game::relativeCardPosition(unsigned int x, unsigned int y)
 {
   sf::Vector2f r;
 
-  r.x = ( x * window.getSize().x * .1 ) + ( .5 * ( window.getSize().x / 10 - 72 ) );
+  r.x = absoluteCardPosition(x,y).x;
 
   if ( y == 0 )
     r.y = topBar.getSize().y;
@@ -106,8 +131,9 @@ sf::Vector2f relativeCardPosition( unsigned int x, unsigned int y )
 
 // returns true if the card can be moved; all the cards after card x,y are stacked correctly.
 // make this return true all the time to allow moving cards to any stack you want regardless of the card order.
-bool movableStack( unsigned int x, unsigned int y )
+bool Game::movableStack( unsigned int x, unsigned int y )
 {
+
   if ( board[x].size() - 1 == y )
     return true;
 
@@ -121,8 +147,9 @@ bool movableStack( unsigned int x, unsigned int y )
 }
 
 // returns true if the card(s) at and on top of card x,y can be moved to columb newX.
-bool validMove( unsigned int x, unsigned int y, unsigned int newX )
+bool Game::validMove( unsigned int x, unsigned int y, unsigned int newX )
 {
+
   if ( x == newX )
     return false;
 
@@ -141,8 +168,9 @@ bool validMove( unsigned int x, unsigned int y, unsigned int newX )
 }
 
 // removes completed stacks (ace-king).
-void completeStack( unsigned int x )
+void Game::completeStack( unsigned int x )
 {
+
   if ( board[x].size() < 13 )
     return;
 
@@ -166,8 +194,9 @@ void completeStack( unsigned int x )
 }
 
 // returns the number of correctly stacked cards on columb x.
-unsigned int getMovableStackSize( unsigned int x )
+unsigned int Game::getMovableStackSize( unsigned int x )
 {
+
   unsigned int stackSize = 1;
 
   if ( board[x].size() == 0 )
@@ -185,13 +214,10 @@ unsigned int getMovableStackSize( unsigned int x )
 }
 
 // (de)compress stacks to fit on the screen.
-void resizeStack( unsigned int x )
+void Game::resizeStack( unsigned int x )
 {
-  unsigned int movableStackSize = getMovableStackSize( x );
 
-  // i don't remember what this is for so i'll leave it here for now, i'll remove it if nothing breaks.
-  //if ( board[x][ board[x].size() - 1 ]->shape.getPosition().y + window.getSize().y / 20 <= window.getSize().y + topBar.getSize().y )
-    //return;
+  unsigned int movableStackSize = getMovableStackSize( x );
 
   // all cards fit
   if ( window.getSize().y - topBar.getSize().y - board[x].size() * window.getSize().y / 20 >= 0 )
@@ -235,8 +261,9 @@ void resizeStack( unsigned int x )
 }
 
 // set all the cards to the un-compressed position, then re-compress them.
-void resetStack( sf::Vector2i card )
+void Game::resetStack( sf::Vector2i card )
 {
+
   for ( unsigned int y = card.y; y < board[card.x].size(); y++ )
     board[ card.x ][ y ]->shape.setPosition( absoluteCardPosition( card.x, y ) );
 
@@ -244,8 +271,9 @@ void resetStack( sf::Vector2i card )
 }
 
 // moves the card(s) on top of, and including, card x,y onto the top of stack newX.
-void moveCards( unsigned int x, unsigned int y, unsigned int newX )
+void Game::moveCards( unsigned int x, unsigned int y, unsigned int newX )
 {
+
   for ( unsigned int i = y; i < board[x].size(); i++ )
   {
     board[x][i]->shape.setPosition( relativeCardPosition( newX, board[newX].size() ) );
@@ -268,8 +296,9 @@ void moveCards( unsigned int x, unsigned int y, unsigned int newX )
 // moves card(s) at, and on top of, position x,y to the "best" position on the board.
 // moves to the left most columb in the case of a tie.
 // moves to the columb that will create the largest stack of correctly stacked cards.
-void autoMoveCards( unsigned int x, unsigned int y )
+void Game::autoMoveCards( unsigned int x, unsigned int y )
 {
+
   std::vector< sf::Vector2i > validMoves; // .x is the position, .y is the size of the stack
 
   if ( ! movableStack( x, y ) )
